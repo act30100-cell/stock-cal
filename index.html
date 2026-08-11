@@ -39,7 +39,8 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* ── masthead ─────────────────────────── */
-.mast{background:var(--ink);color:#fff;position:sticky;top:0;z-index:40;border-bottom:3px solid var(--accent)}
+#topStack{position:sticky;top:0;z-index:40}
+.mast{background:var(--ink);color:#fff;border-bottom:3px solid var(--accent)}
 .mast-in{max-width:1280px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .mark{margin-right:auto;display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
 .mark h1{
@@ -60,11 +61,6 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .btn-primary:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
 
 /* ── layout ───────────────────────────── */
-.wrap{max-width:1280px;margin:0 auto;padding:26px 28px 60px;display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:26px;align-items:start}
-@media(max-width:980px){
-  .wrap{grid-template-columns:1fr;padding:18px 16px 40px;gap:18px}
-  .wrap > div:last-child{order:-1}
-}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:18px}
 .card:last-child{margin-bottom:0}
 .card-h{display:flex;align-items:center;gap:9px;margin:0 0 4px;padding-bottom:11px;border-bottom:1.5px solid var(--ink)}
@@ -75,7 +71,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .lrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);transition:background .12s;margin:0 -6px}
 .lrow:last-child{border-bottom:0}
 .lrow:hover{background:var(--sub)}
-.lrow > label{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--muted)}
+.lrow > label{flex:0 1 auto;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted)}
 .lrow .tag{
   font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;
   padding:1px 5px;border-radius:2px;margin-left:6px;vertical-align:1px;text-transform:uppercase;
@@ -84,7 +80,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .tag.manual{background:var(--sub);color:var(--faint);border:1px solid var(--line)}
 .lrow .sp{flex:1 1 auto;min-width:8px}
 .lrow input{
-  flex:0 1 auto;width:160px;text-align:right;background:transparent;
+  flex:0 1 160px;width:160px;min-width:84px;text-align:right;background:transparent;
   border:0;border-bottom:1px solid var(--line-2);padding:4px 3px;
   font-family:var(--mono);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;
 }
@@ -175,6 +171,7 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--muted);position:relative;z-index:1;
 }
 .step.final .step-n{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-body{min-width:0}
 .step-t{font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 10px;line-height:1.4}
 .formula{
   font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--ink-2);
@@ -194,11 +191,76 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 }
 .crosscheck.show{display:block}
 .crosscheck b{color:var(--ink);font-family:var(--mono);font-weight:600}
-.footnote{font-size:11.5px;color:var(--faint);line-height:1.75;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.footnote{font-size:11.5px;color:var(--faint);line-height:1.75;margin-top:15px;padding:0 6px}
 .footnote p{margin:0 0 3px;padding-left:11px;text-indent:-11px}
 
+/* ── tabs & panes ─────────────────────── */
+.tabs,.minibar{display:none}
+.wrap{max-width:1280px;margin:0 auto;padding:26px 28px 60px;display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:26px;align-items:start}
+#paneInput{grid-column:1;grid-row:1 / span 2}
+#paneResult{grid-column:2;grid-row:1}
+#paneCompare{grid-column:2;grid-row:2}
+@media(max-width:980px){
+  .mast-in{padding:10px 14px;gap:9px}
+  .mark h1{font-size:17px}
+  .mark p{display:none}
+  .btn{padding:6px 11px;font-size:12px}
+  .tabs{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .tab{
+    border:0;background:transparent;padding:12px 6px 10px;font-size:13.5px;font-weight:700;
+    color:var(--faint);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;
+  }
+  .tab.is-on{color:var(--ink);border-bottom-color:var(--accent)}
+  .tab-c{
+    display:inline-block;min-width:16px;margin-left:5px;padding:0 4px;border-radius:8px;
+    background:var(--sub);color:var(--muted);font-family:var(--mono);font-size:10px;font-weight:600;
+  }
+  .tab.is-on .tab-c{background:var(--accent-tint);color:var(--accent-deep)}
+  .minibar{
+    display:flex;align-items:baseline;gap:6px;background:var(--ink);color:#fff;
+    padding:7px 16px;
+  }
+  .minibar .mk{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+  .minibar .mv{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+  .minibar .mv:first-of-type{color:var(--accent)}
+  .minibar .mk:nth-of-type(2){margin-left:auto}
+  .wrap{display:block;grid-template-columns:1fr;padding:16px 14px 44px}
+  .pane{display:none}
+  .pane.is-on{display:block}
+  .card,.plate,.detail,.cmp{margin-bottom:14px}
+  .detail summary{padding:14px 16px}
+  .detail .rail{padding:6px 14px 14px}
+  .step{grid-template-columns:38px minmax(0,1fr);padding:15px 0}
+  .step-rail::after{left:8px}
+  .formula{font-size:10.5px;padding:9px 10px}
+  .cmp{padding:18px 16px 20px}
+  .rail{padding-left:14px;padding-right:14px}
+}
+
+/* ── collapsible detail ───────────────── */
+.detail{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);margin-top:18px}
+.detail summary{
+  list-style:none;cursor:pointer;padding:15px 22px;display:flex;align-items:center;gap:10px;
+  font-family:var(--serif);font-size:14.5px;font-weight:700;
+}
+.detail summary::-webkit-details-marker{display:none}
+.detail summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.detail summary:hover .d-s{color:var(--accent-deep)}
+.d-s{margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--faint);letter-spacing:.03em}
+.d-x{
+  flex:0 0 auto;width:9px;height:9px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
+  transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s;
+}
+.detail[open] .d-x{transform:rotate(-135deg) translate(-3px,-3px)}
+.detail .rail{margin-top:0;border:0;border-top:1px solid var(--line);border-radius:0;padding:8px 22px 18px}
+.detail .footnote{display:none}
+@media(prefers-reduced-motion:reduce){.d-x{transition:none}}
+
 /* ── scenario compare ─────────────────── */
-.cmp{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px 24px 24px}
+.cmp{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px 24px 24px}
 .cmp-h{display:flex;align-items:center;gap:10px;padding-bottom:11px;border-bottom:1.5px solid var(--ink);flex-wrap:wrap}
 .cmp-h h2{margin:0;font-family:var(--serif);font-size:15.5px;font-weight:700}
 .cmp-h .count{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.04em}
@@ -296,6 +358,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 </head>
 <body>
 
+<div id="topStack">
 <header class="mast">
   <div class="mast-in">
     <div class="mark">
@@ -307,9 +370,20 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   </div>
 </header>
 
+<nav class="tabs" id="tabs" role="tablist" aria-label="화면 이동">
+  <button class="tab is-on" type="button" data-p="input" role="tab">입력</button>
+  <button class="tab" type="button" data-p="result" role="tab">결과</button>
+  <button class="tab" type="button" data-p="compare" role="tab">비교<span class="tab-c" id="tabCount">0</span></button>
+</nav>
+<div class="minibar" id="minibar">
+  <span class="mk">1주당</span><span class="mv" id="miniPS">0원</span>
+  <span class="mk">기업가치</span><span class="mv" id="miniCorp">0억</span>
+</div>
+</div>
+
 <div class="wrap">
   <!-- ═══ 입력 ═══ -->
-  <div>
+  <section class="pane is-on" id="paneInput">
     <div class="card">
       <div class="card-h"><h2>진단 리포트 불러오기</h2><span>PDF</span></div>
       <div class="drop" id="drop" tabindex="0" role="button" aria-label="리포트 PDF 선택">
@@ -380,7 +454,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <span class="unit">%</span>
       </div>
       <div class="lrow">
-        <label for="floorPct">평가하한 (순자산가치의)</label>
+        <label for="floorPct">평가하한 (순자산 대비)</label>
         <span class="sp"></span>
         <input type="text" id="floorPct" inputmode="decimal" value="80" />
         <span class="unit">%</span>
@@ -395,10 +469,10 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       </div>
       <div id="netAssetHint" hidden></div>
     </div>
-  </div>
+  </section>
 
   <!-- ═══ 결과 ═══ -->
-  <div>
+  <section class="pane" id="paneResult">
     <div class="plate">
       <div class="plate-top">
         <p class="plate-name" id="rName">회사명을 입력하세요</p>
@@ -420,7 +494,15 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       </div>
     </div>
 
-    <div class="rail">
+    <div class="crosscheck" id="cross"></div>
+
+    <details class="detail" id="detailBox">
+      <summary>
+        <span class="d-t">계산 상세내역</span>
+        <span class="d-s">STEP 1 → 3 산식</span>
+        <span class="d-x" aria-hidden="true"></span>
+      </summary>
+      <div class="rail">
       <div class="step">
         <div class="step-rail"><span class="step-n">1</span></div>
         <div class="step-body">
@@ -460,7 +542,8 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         </div>
       </div>
 
-      <div class="crosscheck" id="cross"></div>
+      </div>
+    </details>
 
       <div class="footnote">
         <p>· 순손익가치 또는 순자산가치가 음수인 경우 0으로 처리합니다.</p>
@@ -468,7 +551,10 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <p>· 원 단위 반올림 방식에 따라 실제 신고서와 1원 내외 차이가 날 수 있습니다.</p>
         <p>· 재무제표 기준 약식 계산입니다. 실행 전 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>
       </div>
-    </div>
+  </section>
+
+  <!-- ═══ 비교 ═══ -->
+  <section class="pane" id="paneCompare">
     <div class="cmp">
       <div class="cmp-h">
         <h2>시나리오 비교</h2>
@@ -491,7 +577,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <div id="chart"></div>
       </div>
     </div>
-  </div>
+  </section>
 </div>
 
 <!-- ═══ 인쇄 전용 ═══ -->
@@ -583,6 +669,8 @@ function render(){
 
   $("rCorp").innerHTML = eok(r.corpValue)+"<small>억원</small>";
   $("rHold").innerHTML = eok(r.holdValue)+"<small>억원</small>";
+  $("miniPS").textContent = num(r.final)+"원";
+  $("miniCorp").textContent = eok(r.corpValue)+"억";
 
   var ys = S.years;
   var l1 = "주당순손익액   " + ys.map(function(o,i){ return (o.y||"—")+" : "+num(r.perYear[i])+"원"; }).join("\n              ");
@@ -682,6 +770,7 @@ function cmpModel(){
 function renderCompare(){
   var sc = S.scenarios;
   $("scCount").textContent = sc.length+" / "+MAX_SC;
+  $("tabCount").textContent = sc.length;
   $("btnSave").disabled = sc.length>=MAX_SC;
   var has = sc.length>0;
   $("cmpEmpty").hidden = has;
@@ -1080,7 +1169,25 @@ $("floorPct").addEventListener("input", function(){ S.floorPct = parseNum(this.v
 $("corpType").addEventListener("change", function(){ S.corpType = this.value; render(); });
 $("goodwillOn").addEventListener("change", function(){ S.goodwillOn = +this.value; render(); });
 
-$("btnSave").addEventListener("click", saveScenario);
+function isNarrow(){ return window.matchMedia("(max-width:980px)").matches; }
+function setPane(p){
+  ["input","result","compare"].forEach(function(k){
+    $("pane"+k.charAt(0).toUpperCase()+k.slice(1)).classList.toggle("is-on", k===p);
+  });
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.classList.toggle("is-on", t.dataset.p===p);
+    t.setAttribute("aria-selected", t.dataset.p===p ? "true" : "false");
+  });
+  if(isNarrow()) window.scrollTo({top:0, behavior:"instant" in window ? "auto" : "auto"});
+}
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click", function(){ setPane(t.dataset.p); });
+});
+
+$("btnSave").addEventListener("click", function(){
+  saveScenario();
+  if(isNarrow()) setPane("compare");
+});
 $("btnClearSc").addEventListener("click", function(){
   if(!S.scenarios.length) return;
   S.scenarios = [];
