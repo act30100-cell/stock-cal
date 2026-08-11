@@ -306,53 +306,66 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 .chart-lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
 .chart-wrap svg{width:100%;height:auto;display:block}
 
-/* ── print ────────────────────────────── */
+/* ── toast ────────────────────────────── */
+.toast{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);z-index:60;
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;
+  font-size:13px;font-weight:600;box-shadow:0 6px 22px rgba(0,0,0,.22);
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:86vw;text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:#9E2F2A}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ── report sheet (print & PDF export) ── */
 #printSheet{display:none}
-@media print{
-  @page{size:A4 portrait;margin:15mm}
-  body{background:#fff;font-size:10.5pt;color:#000}
-  .mast,.wrap{display:none !important}
-  #printSheet{display:block}
-  .p-h{border-bottom:2pt solid #17181C;padding-bottom:9px;margin-bottom:16px}
-  .p-h h1{font-family:var(--serif);font-size:17pt;margin:0 0 3px;letter-spacing:-0.01em}
-  .p-h span{font-family:var(--mono);font-size:8.5pt;color:#666;letter-spacing:.03em}
-  .p-sub{font-family:var(--serif);font-size:11.5pt;font-weight:700;margin:0 0 8px}
-  .p-final{
+#printSheet.render{display:block;position:fixed;left:-20000px;top:0;width:794px;background:#fff;color:#000;padding:44px 46px;font-size:10.5pt;z-index:-1}
+#printSheet .p-h{border-bottom:2pt solid #17181C;padding-bottom:9px;margin-bottom:16px}
+#printSheet .p-h h1{font-family:var(--serif);font-size:17pt;margin:0 0 3px;letter-spacing:-0.01em}
+#printSheet .p-h span{font-family:var(--mono);font-size:8.5pt;color:#666;letter-spacing:.03em}
+#printSheet .p-sub{font-family:var(--serif);font-size:11.5pt;font-weight:700;margin:0 0 8px}
+#printSheet .p-final{
     border:1pt solid #17181C;border-left:4pt solid var(--accent);padding:11px 16px;
     display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;
   }
-  .p-final .k{font-size:10pt;font-weight:700}
-  .p-final .v{font-family:var(--mono);font-size:19pt;font-weight:600;color:var(--accent-deep)}
-  table.p-t{width:100%;border-collapse:collapse;margin-bottom:18px}
-  table.p-t th,table.p-t td{border-bottom:0.5pt solid #CCC;padding:6px 4px;font-size:9.5pt}
-  table.p-t th{text-align:left;font-weight:600;width:44%;color:#444}
-  table.p-t td{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
-  table.p-t tr.hl th{font-weight:800;color:#000}
-  table.p-t tr.hl th,table.p-t tr.hl td{border-top:1pt solid #17181C;border-bottom:1pt solid #17181C;font-weight:700}
-  .p-band{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
-  .p-fcard{
+#printSheet .p-final .k{font-size:10pt;font-weight:700}
+#printSheet .p-final .v{font-family:var(--mono);font-size:19pt;font-weight:600;color:var(--accent-deep)}
+#printSheet table.p-t{width:100%;border-collapse:collapse;margin-bottom:18px}
+#printSheet table.p-t th,#printSheet table.p-t td{border-bottom:0.5pt solid #CCC;padding:6px 4px;font-size:9.5pt}
+#printSheet table.p-t th{text-align:left;font-weight:600;width:44%;color:#444}
+#printSheet table.p-t td{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+#printSheet table.p-t tr.hl th{font-weight:800;color:#000}
+#printSheet table.p-t tr.hl th,#printSheet table.p-t tr.hl td{border-top:1pt solid #17181C;border-bottom:1pt solid #17181C;font-weight:700}
+#printSheet .p-band{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+#printSheet .p-fcard{
     flex:1 1 0;min-width:104px;border:0.5pt solid #BBB;border-left:3pt solid #D8D5CE;
     padding:8px 11px;display:flex;flex-direction:column;gap:2px;
   }
-  .p-fcard.base{border-left-color:var(--accent);background:#FBF9F6}
-  .p-fcard .n{font-size:8.5pt;font-weight:700;color:#555}
-  .p-fcard .v{font-family:var(--mono);font-size:14pt;font-weight:600;color:#17181C;letter-spacing:-0.02em}
-  .p-fcard .v em{font-style:normal;font-family:var(--sans);font-size:8.5pt;font-weight:600;color:#888;margin-left:2px}
-  .p-fcard.base .v{color:var(--accent-deep)}
-  .p-fcard .d{font-family:var(--mono);font-size:8pt;color:#777}
-  .p-fcard .d b{font-weight:600}
-  .p-fcard .d b.up{color:#C9520A}
-  .p-fcard .d b.dn{color:#3E7A5E}
-  .p-break{page-break-inside:avoid}
-  table.p-c{width:100%;border-collapse:collapse;margin-bottom:14px}
-  table.p-c th,table.p-c td{border-bottom:0.5pt solid #CCC;padding:5px 6px;font-size:9pt;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
-  table.p-c th.rh{text-align:left;width:30%;color:#444;font-weight:600;font-family:var(--sans)}
-  table.p-c thead th{border-bottom:1pt solid #17181C;font-weight:700;font-family:var(--sans)}
-  table.p-c tr.key th,table.p-c tr.key td{border-top:1pt solid #17181C;font-weight:800}
-  table.p-c tr.dl th,table.p-c tr.dl td{color:#666;font-size:8.5pt;border-bottom:0}
-  .p-chart{margin:6px 0 16px}
-  .p-chart svg{width:100%;height:auto}
-  .p-note{font-size:8.5pt;color:#666;line-height:1.7;border-top:0.5pt solid #CCC;padding-top:9px}
+#printSheet .p-fcard.base{border-left-color:var(--accent);background:#FBF9F6}
+#printSheet .p-fcard .n{font-size:8.5pt;font-weight:700;color:#555}
+#printSheet .p-fcard .v{font-family:var(--mono);font-size:14pt;font-weight:600;color:#17181C;letter-spacing:-0.02em}
+#printSheet .p-fcard .v em{font-style:normal;font-family:var(--sans);font-size:8.5pt;font-weight:600;color:#888;margin-left:2px}
+#printSheet .p-fcard.base .v{color:var(--accent-deep)}
+#printSheet .p-fcard .d{font-family:var(--mono);font-size:8pt;color:#777}
+#printSheet .p-fcard .d b{font-weight:600}
+#printSheet .p-fcard .d b.up{color:#C9520A}
+#printSheet .p-fcard .d b.dn{color:#3E7A5E}
+#printSheet .p-break{page-break-inside:avoid}
+#printSheet table.p-c{width:100%;border-collapse:collapse;margin-bottom:14px}
+#printSheet table.p-c th,#printSheet table.p-c td{border-bottom:0.5pt solid #CCC;padding:5px 6px;font-size:9pt;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+#printSheet table.p-c th.rh{text-align:left;width:30%;color:#444;font-weight:600;font-family:var(--sans)}
+#printSheet table.p-c thead th{border-bottom:1pt solid #17181C;font-weight:700;font-family:var(--sans)}
+#printSheet table.p-c tr.key th,#printSheet table.p-c tr.key td{border-top:1pt solid #17181C;font-weight:800}
+#printSheet table.p-c tr.dl th,#printSheet table.p-c tr.dl td{color:#666;font-size:8.5pt;border-bottom:0}
+#printSheet .p-chart{margin:6px 0 16px}
+#printSheet .p-chart svg{width:100%;height:auto}
+#printSheet .p-note{font-size:8.5pt;color:#666;line-height:1.7;border-top:0.5pt solid #CCC;padding-top:9px}
+
+@media print{
+  @page{size:A4 portrait;margin:15mm}
+  body{background:#fff;font-size:10.5pt;color:#000}
+  #topStack,.wrap{display:none !important}
+  #printSheet{display:block}
 }
 </style>
 </head>
@@ -580,8 +593,9 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   </section>
 </div>
 
-<!-- ═══ 인쇄 전용 ═══ -->
+<!-- ═══ 인쇄 · PDF 전용 ═══ -->
 <div id="printSheet"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -1194,7 +1208,97 @@ $("btnClearSc").addEventListener("click", function(){
   renderCompare(); render();
 });
 
-$("btnPrint").addEventListener("click", function(){ window.print(); });
+/* ── PDF 저장 ───────────────────────────── */
+var CDN_H2C = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+var CDN_PDF = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+var toastT = null;
+function toast(msg, kind, hold){
+  var el = $("toast");
+  el.textContent = msg;
+  el.className = "toast on" + (kind==="err" ? " err" : "");
+  clearTimeout(toastT);
+  if(!hold) toastT = setTimeout(function(){ el.className = "toast" + (kind==="err"?" err":""); }, 2600);
+}
+function hideToast(){ clearTimeout(toastT); $("toast").className = "toast"; }
+function loadScript(src){
+  return new Promise(function(res, rej){
+    if(document.querySelector('script[data-x="'+src+'"]')) return res();
+    var s = document.createElement("script");
+    s.src = src; s.async = true; s.setAttribute("data-x", src);
+    s.onload = res;
+    s.onerror = function(){ rej(new Error("script")); };
+    document.head.appendChild(s);
+  });
+}
+function breakPoints(sheet, scale){
+  var top = sheet.getBoundingClientRect().top, out = [];
+  sheet.querySelectorAll(".p-sub, .p-band, table, tr, .p-note").forEach(function(el){
+    var y = (el.getBoundingClientRect().top - top) * scale;
+    if(y > 0) out.push(Math.round(y - 8*scale));
+  });
+  out.sort(function(a,b){ return a-b; });
+  return out;
+}
+function pdfName(){
+  var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
+  return (S.company || "비상장주식").replace(/[\\/:*?"<>|]/g,"") + "_주식평가_"
+       + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + ".pdf";
+}
+function wantsFile(){
+  return window.matchMedia("(max-width:980px)").matches
+      || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      || typeof window.print !== "function";
+}
+async function savePdfFile(){
+  var sheet = $("printSheet");
+  toast("PDF를 만드는 중…", "", true);
+  try{
+    await loadScript(CDN_H2C);
+    await loadScript(CDN_PDF);
+    if(document.fonts && document.fonts.ready) { try{ await document.fonts.ready; }catch(e){} }
+    sheet.classList.add("render");
+    await new Promise(function(r){ setTimeout(r, 60); });
+    var canvas = await html2canvas(sheet, {scale:2, backgroundColor:"#FFFFFF", useCORS:true, logging:false});
+    var stops = breakPoints(sheet, canvas.width / sheet.offsetWidth);
+    sheet.classList.remove("render");
+
+    var JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    var pdf = new JsPDF({unit:"mm", format:"a4", orientation:"portrait"});
+    var M = 10, PW = 210, PH = 297, iw = PW - M*2, avail = PH - M*2;
+    var sliceH = Math.floor(canvas.width * avail / iw);
+    var start = 0, first = true;
+    while(start < canvas.height - 2){
+      var end = Math.min(start + sliceH, canvas.height);
+      if(end < canvas.height){
+        var cut = 0;
+        for(var k=0;k<stops.length;k++){
+          if(stops[k] > start + sliceH*0.35 && stops[k] <= end) cut = stops[k];
+        }
+        if(cut) end = cut;
+      }
+      var hpx = end - start;
+      var c2 = document.createElement("canvas");
+      c2.width = canvas.width; c2.height = hpx;
+      var cx = c2.getContext("2d");
+      cx.fillStyle = "#FFFFFF"; cx.fillRect(0,0,c2.width,c2.height);
+      cx.drawImage(canvas, 0, -start);
+      if(!first) pdf.addPage();
+      pdf.addImage(c2.toDataURL("image/jpeg", 0.92), "JPEG", M, M, iw, hpx*iw/canvas.width);
+      first = false;
+      start = end;
+    }
+    pdf.save(pdfName());
+    toast("PDF를 저장했습니다");
+  }catch(e){
+    sheet.classList.remove("render");
+    toast("PDF를 만들지 못했습니다. 인쇄 화면으로 엽니다.", "err");
+    try{ window.print(); }catch(e2){}
+  }
+}
+$("btnPrint").addEventListener("click", function(){
+  if(wantsFile()) savePdfFile();
+  else window.print();
+});
 $("btnReset").addEventListener("click", function(){
   S.company=""; S.baseDate=""; S.shares=0; S.holdRatio=100; S.netAsset=0;
   S.years=[{y:"",ni:0,w:1},{y:"",ni:0,w:2},{y:"",ni:0,w:3}];
