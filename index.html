@@ -1026,49 +1026,104 @@ function renderCompare(){
 
 function drawChart(){
   var sc = S.scenarios;
-  if(sc.length<2){ $("chart").innerHTML=""; return; }
-  $("chart").innerHTML = chartSVG(sc);
+  var box = $("chart");
+  if(sc.length<2){ box.innerHTML=""; return; }
+  var w = box.clientWidth || 700;
+  box.innerHTML = chartSVG(sc, Math.max(320, Math.min(760, Math.round(w))));
 }
+var rzT = null;
+window.addEventListener("resize", function(){
+  clearTimeout(rzT);
+  rzT = setTimeout(function(){ if(S.scenarios.length>1) drawChart(); }, 180);
+});
 
-function chartSVG(sc){
-  var W=700, H=250, L=52, R=16, T=38, B=40;
+function chartSVG(sc, W){
+  W = W || 700;
+  var narrow = W < 470;
+  var H = narrow ? 268 : 300;
+  var L = narrow ? 32 : 44, R = 12, T = 30, B = narrow ? 62 : 66;
   var pw = W-L-R, ph = H-T-B;
-  var vals = sc.map(function(s){ return s.corpValue/1e8; });
-  var max = Math.max.apply(null, vals.concat([0.0001]));
-  var yMax = niceMax(max*1.18);
-  var band = pw/sc.length;
-  var bw = Math.min(74, band*0.46);
-  var y0 = T+ph;
-  var baseV = vals[0];
-  var yBase = y0 - (baseV/yMax)*ph;
-  var s = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">';
+  var FS = {axis: narrow?10:11, name: narrow?12:13, val: narrow?13:15, dlt: narrow?11:12, leg: narrow?10.5:11.5};
+  var C = {bar:"#D9D6CF", base:"#B9B5AC", up:"#F37321", upT:"#FFFFFF",
+           dn:"#E4EEE8", dnS:"#3E7A5E", ink:"#17181C", mut:"#6B7078", grid:"#EDEBE6"};
 
-  // y grid
+  var vals = sc.map(function(s){ return s.corpValue/1e8; });
+  var baseV = vals[0];
+  var yMax = niceMax(Math.max.apply(null, vals.concat([0.0001])) * 1.14);
+  var band = pw/sc.length;
+  var bw = Math.min(narrow?54:84, band*0.52);
+  var y0 = T+ph;
+  var Y = function(v){ return y0 - (v/yMax)*ph; };
+  var yBase = Y(baseV);
+  var hasUp = false, hasDn = false;
+
+  var s = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" '
+        + 'font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">';
+
+  // 눈금
   for(var g=0; g<=2; g++){
-    var gv = yMax*g/2, gy = y0-(gv/yMax)*ph;
-    s += '<line x1="'+L+'" y1="'+gy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+gy.toFixed(1)+'" stroke="#EDEBE6" stroke-width="1"/>';
-    s += '<text x="'+(L-9)+'" y="'+(gy+3.5).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#A4A8AF">'+(gv===0?"0":gv>=10?gv.toFixed(0):gv.toFixed(1))+'</text>';
+    var gv = yMax*g/2, gy = Y(gv);
+    s += '<line x1="'+L+'" y1="'+gy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+gy.toFixed(1)+'" stroke="'+C.grid+'" stroke-width="1"/>';
+    s += '<text x="'+(L-7)+'" y="'+(gy+3.5).toFixed(1)+'" text-anchor="end" font-size="'+FS.axis+'" fill="'+C.mut+'">'
+       + (gv===0 ? "0" : gv>=10 ? gv.toFixed(0) : gv.toFixed(1)) + '</text>';
   }
-  // baseline
-  s += '<line x1="'+L+'" y1="'+yBase.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yBase.toFixed(1)+'" stroke="#17181C" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>';
-  s += '<text x="'+(W-R)+'" y="'+(yBase-6).toFixed(1)+'" text-anchor="end" font-size="9" fill="#767B84">기준</text>';
+
+  // 기준선
+  s += '<line x1="'+L+'" y1="'+yBase.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yBase.toFixed(1)+'" stroke="'+C.ink+'" stroke-width="1.2" stroke-dasharray="5 4" opacity=".5"/>';
 
   sc.forEach(function(o,i){
-    var v = vals[i];
-    var x = L + band*i + (band-bw)/2;
-    var h = Math.max(1,(v/yMax)*ph);
-    var y = y0-h;
-    var isBase = i===0;
-    s += '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+(isBase?"#C9C6BE":"#E3E1DB")+'"/>';
-    if(!isBase && baseV>0){
-      var d = v-baseV, p = d/baseV*100;
-      s += '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="3" fill="'+(d>0?"#F37321":"#3E7A5E")+'"/>';
-      s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-20).toFixed(1)+'" text-anchor="middle" font-size="10" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5" fill="'+(d>0?"#C9520A":"#3E7A5E")+'">'+(d>0?"+":"")+p.toFixed(1)+'%</text>';
+    var v = vals[i], x = L + band*i + (band-bw)/2, cx = x + bw/2;
+    var yv = Y(v);
+    var top = yv;
+
+    if(i===0){
+      s += '<rect x="'+x.toFixed(1)+'" y="'+yv.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,y0-yv).toFixed(1)+'" fill="'+C.base+'"/>';
+    } else if(v >= baseV){
+      hasUp = true;
+      s += '<rect x="'+x.toFixed(1)+'" y="'+yBase.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,y0-yBase).toFixed(1)+'" fill="'+C.bar+'"/>';
+      var hUp = yBase - yv;
+      s += '<rect x="'+x.toFixed(1)+'" y="'+yv.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,hUp).toFixed(1)+'" fill="'+C.up+'"/>';
+      if(hUp >= FS.dlt+3){
+        s += '<text x="'+cx.toFixed(1)+'" y="'+(yv + hUp/2 + FS.dlt*0.36).toFixed(1)+'" text-anchor="middle" font-size="'+FS.dlt+'" font-weight="600" fill="'+C.upT+'">+'
+           + (v-baseV).toFixed(2) + '</text>';
+      }
+    } else {
+      hasDn = true;
+      s += '<rect x="'+x.toFixed(1)+'" y="'+yv.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,y0-yv).toFixed(1)+'" fill="'+C.bar+'"/>';
+      var hDn = yv - yBase;
+      s += '<rect x="'+x.toFixed(1)+'" y="'+yBase.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,hDn).toFixed(1)+'" fill="'+C.dn+'" stroke="'+C.dnS+'" stroke-width="1" stroke-dasharray="3 3"/>';
+      if(hDn >= FS.dlt+3){
+        s += '<text x="'+cx.toFixed(1)+'" y="'+(yBase + hDn/2 + FS.dlt*0.36).toFixed(1)+'" text-anchor="middle" font-size="'+FS.dlt+'" font-weight="600" fill="'+C.dnS+'">−'
+           + (baseV-v).toFixed(2) + '</text>';
+      }
+      top = yBase;
     }
-    s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" text-anchor="middle" font-size="12.5" font-weight="600" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5" fill="#17181C">'+v.toFixed(2)+'</text>';
-    s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y0+18).toFixed(1)+'" text-anchor="middle" font-size="11" fill="#767B84" font-family="Pretendard, sans-serif">'+escapeHtml(o.name)+'</text>';
+
+    // 막대 위 값 + 증감률
+    var d = v - baseV, p = baseV ? d/baseV*100 : 0;
+    s += '<text x="'+cx.toFixed(1)+'" y="'+(top-9).toFixed(1)+'" text-anchor="middle" font-size="'+FS.val+'" font-weight="700" '
+       + 'paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5" fill="'+C.ink+'">'+v.toFixed(2)+'</text>';
+    if(i>0 && baseV){
+      s += '<text x="'+cx.toFixed(1)+'" y="'+(y0+B*0.62).toFixed(1)+'" text-anchor="middle" font-size="'+FS.dlt+'" font-weight="600" fill="'
+         + (d>0?"#C9520A":C.dnS)+'">'+(d>0?"+":"−")+Math.abs(p).toFixed(1)+'%</text>';
+    }
+    s += '<text x="'+cx.toFixed(1)+'" y="'+(y0+B*0.3).toFixed(1)+'" text-anchor="middle" font-size="'+FS.name+'" font-weight="700" fill="'+C.ink+'" '
+       + 'font-family="Pretendard,sans-serif">'+escapeHtml(o.name)+'</text>';
   });
+
   s += '<line x1="'+L+'" y1="'+y0+'" x2="'+(W-R)+'" y2="'+y0+'" stroke="#CFCCC4" stroke-width="1"/>';
+
+  // 범례
+  var items = [{c:C.base, t:"기준"}];
+  if(hasUp) items.push({c:C.up, t:"증가분"});
+  if(hasDn) items.push({c:C.dn, t:"감소분", s:C.dnS});
+  var gap = narrow ? 64 : 78, lw = items.length*gap, lx = L + (pw-lw)/2 + 4, ly = H-9;
+  items.forEach(function(it,i){
+    var ix = lx + i*gap;
+    s += '<rect x="'+ix+'" y="'+(ly-8)+'" width="9" height="9" fill="'+it.c+'"'+(it.s?' stroke="'+it.s+'" stroke-width="1"':'')+'/>';
+    s += '<text x="'+(ix+13)+'" y="'+ly+'" font-size="'+FS.leg+'" fill="'+C.mut+'" font-family="Pretendard,sans-serif">'+it.t+'</text>';
+  });
+
   s += '</svg>';
   return s;
 }
