@@ -267,6 +267,20 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   table.p-t td{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
   table.p-t tr.hl th{font-weight:800;color:#000}
   table.p-t tr.hl th,table.p-t tr.hl td{border-top:1pt solid #17181C;border-bottom:1pt solid #17181C;font-weight:700}
+  .p-band{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+  .p-fcard{
+    flex:1 1 0;min-width:104px;border:0.5pt solid #BBB;border-left:3pt solid #D8D5CE;
+    padding:8px 11px;display:flex;flex-direction:column;gap:2px;
+  }
+  .p-fcard.base{border-left-color:var(--accent);background:#FBF9F6}
+  .p-fcard .n{font-size:8.5pt;font-weight:700;color:#555}
+  .p-fcard .v{font-family:var(--mono);font-size:14pt;font-weight:600;color:#17181C;letter-spacing:-0.02em}
+  .p-fcard .v em{font-style:normal;font-family:var(--sans);font-size:8.5pt;font-weight:600;color:#888;margin-left:2px}
+  .p-fcard.base .v{color:var(--accent-deep)}
+  .p-fcard .d{font-family:var(--mono);font-size:8pt;color:#777}
+  .p-fcard .d b{font-weight:600}
+  .p-fcard .d b.up{color:#C9520A}
+  .p-fcard .d b.dn{color:#3E7A5E}
   .p-break{page-break-inside:avoid}
   table.p-c{width:100%;border-collapse:collapse;margin-bottom:14px}
   table.p-c th,table.p-c td{border-bottom:0.5pt solid #CCC;padding:5px 6px;font-size:9pt;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -612,7 +626,7 @@ function render(){
     cx.className = "crosscheck";
   }
 
-  buildPrint(r);
+  buildPrint();
 }
 
 /* ── scenarios ─────────────────────────── */
@@ -624,8 +638,10 @@ function snapshot(){
   return {
     name: n===0 ? "기준" : "안 "+n,
     shares:S.shares, netAsset:S.netAsset, rate:S.rate, corpType:S.corpType,
+    floorPct:S.floorPct, goodwillOn:S.goodwillOn, holdRatio:S.holdRatio,
     years:S.years.map(function(o){ return {y:o.y, ni:o.ni, w:o.w}; }),
-    earn:r.earn, asset:r.asset, final:r.final, corpValue:r.corpValue
+    wAvgPS:r.wAvgPS, goodwill:r.goodwill, weighted:r.weighted, floor:r.floor,
+    earn:r.earn, asset:r.asset, final:r.final, corpValue:r.corpValue, holdValue:r.holdValue
   };
 }
 function saveScenario(){
@@ -701,7 +717,7 @@ function renderCompare(){
   $("cmpHead").querySelectorAll(".sc-name").forEach(function(el){
     el.addEventListener("input", function(){
       S.scenarios[+el.dataset.i].name = el.value;
-      drawChart(); buildPrint(calc());
+      drawChart(); buildPrint();
     });
   });
   $("cmpHead").querySelectorAll(".sc-del").forEach(function(el){
@@ -774,56 +790,97 @@ function escapeHtml(t){
   return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
 }
 
-function cmpPrintHTML(){
-  if(S.scenarios.length<2) return "";
-  var m = cmpModel();
-  var h = '<div class="p-break"><p class="p-sub">4. 시나리오 비교</p><table class="p-c"><thead><tr><th class="rh">구분</th>'
-        + m.cols.map(function(c){ return "<th>"+escapeHtml(c)+"</th>"; }).join("") + '</tr></thead><tbody>';
-  m.rows.forEach(function(r){
-    if(r.sec) return;
-    var cls = r.key ? ' class="key"' : (r.delta ? ' class="dl"' : "");
-    h += "<tr"+cls+'><th class="rh">'+r.label+"</th>"
-       + r.vals.map(function(v){ return "<td>"+(typeof v==="object"&&v ? v.t : v)+"</td>"; }).join("")
-       + "</tr>";
-  });
-  h += '</tbody></table><div class="p-chart">'+chartSVG(S.scenarios)+'</div></div>';
-  return h;
+function sameSc(a,b){
+  return a.final===b.final && a.netAsset===b.netAsset && a.shares===b.shares
+    && a.rate===b.rate && a.corpType===b.corpType && a.floorPct===b.floorPct
+    && a.goodwillOn===b.goodwillOn && a.holdRatio===b.holdRatio
+    && a.years.every(function(o,i){ return o.ni===b.years[i].ni && o.w===b.years[i].w && o.y===b.years[i].y; });
+}
+function printCols(){
+  var cols = S.scenarios.slice();
+  var cur = snapshot();
+  cur.name = cols.length ? "현재" : "평가액";
+  if(!cols.some(function(s){ return sameSc(s,cur); })) cols.push(cur);
+  return cols;
 }
 
 /* ── print sheet ───────────────────────── */
-function buildPrint(r){
-  var rows = S.years.map(function(o,i){
-    return "<tr><th>"+(o.y||"—")+" 순손익액 (가중치 "+o.w+")</th><td>"+num(o.ni)+"원</td></tr>";
-  }).join("");
-  var typeLabel = {general:"일반법인 (60:40)", real50:"부동산 50% 이상 (40:60)", real80:"순자산가치만"}[S.corpType];
+function buildPrint(){
+  var cols = printCols();
+  var multi = cols.length>1;
+  var base = cols[0];
+  var typeLabel = {general:"일반법인 (60:40)", real50:"부동산 50% 이상 (40:60)", real80:"순자산가치만"};
+  function amt(v){ return multi ? eok(v)+"억" : num(v)+"원"; }
+
+  // 결과 밴드
+  var band = '<div class="p-band">' + cols.map(function(s,i){
+    var d = (i>0 && base.corpValue) ? (s.corpValue-base.corpValue)/base.corpValue*100 : null;
+    return '<div class="p-fcard'+(i===0?" base":"")+'">'
+         + '<span class="n">'+escapeHtml(s.name)+'</span>'
+         + '<span class="v">'+num(s.final)+'<em>원</em></span>'
+         + '<span class="d">기업가치 '+eok(s.corpValue)+'억원'
+         + (d===null ? '' : ' <b class="'+(d>0?"up":"dn")+'">'+(d>0?"+":"")+d.toFixed(1)+'%</b>')
+         + '</span></div>';
+  }).join("") + '</div>';
+
+  function table(rows, cls){
+    var h = '<table class="p-c"><thead><tr><th class="rh">구분</th>'
+          + cols.map(function(s){ return "<th>"+escapeHtml(s.name)+"</th>"; }).join("")
+          + '</tr></thead><tbody>';
+    rows.forEach(function(r){
+      h += '<tr'+(r.key?' class="key"':(r.dl?' class="dl"':''))+'><th class="rh">'+r.label+'</th>'
+         + r.vals.map(function(v){ return "<td>"+v+"</td>"; }).join("") + '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+  function col(fn){ return cols.map(fn); }
+
+  var t1 = [
+    {label:"발행주식수", vals:col(function(s){ return num(s.shares)+"주"; })},
+    {label:"대상 사업연도", vals:col(function(s){ return s.years.map(function(o){ return o.y||"—"; }).join("·"); })}
+  ];
+  for(var i=0;i<3;i++){
+    (function(i){
+      t1.push({label:"순손익액 "+["①","②","③"][i]+" (가중치 "+(base.years[i]?base.years[i].w:i+1)+")",
+        vals:col(function(s){ return s.years[i] ? amt(s.years[i].ni) : "—"; })});
+    })(i);
+  }
+  t1.push({label:"순자산가액", vals:col(function(s){ return amt(s.netAsset); })});
+  t1.push({label:"평가 유형 / 환원율", vals:col(function(s){ return typeLabel[s.corpType]+" / "+s.rate+"%"; })});
+
+  var t2 = [
+    {label:"주당 순손익 가중평균액", vals:col(function(s){ return num(s.wAvgPS)+"원"; })},
+    {label:"1주당 순손익가치", vals:col(function(s){ return num(s.earn)+"원"; })},
+    {label:"영업권 평가액", vals:col(function(s){ return s.goodwill ? amt(s.goodwill) : "—"; })},
+    {label:"1주당 순자산가치", vals:col(function(s){ return num(s.asset)+"원"; })},
+    {label:"가중평균가액", vals:col(function(s){ return num(s.weighted)+"원"; })},
+    {label:"평가하한 (순자산가치의 "+base.floorPct+"%)", vals:col(function(s){ return num(s.floor)+"원"; })},
+    {key:true, label:"1주당 평가액 (최종)", vals:col(function(s){ return num(s.final)+"원"; })}
+  ];
+
+  var t3 = [
+    {label:"기업가치 (전체 지분)", vals:col(function(s){ return eok(s.corpValue)+"억원"; })},
+    {label:"평가 지분율", vals:col(function(s){ return s.holdRatio+"%"; })},
+    {key:true, label:"보유지분가치", vals:col(function(s){ return eok(s.holdValue)+"억원"; })}
+  ];
+  if(multi){
+    t3.push({dl:true, label:"기준 대비 (기업가치)", vals:col(function(s,i){
+      if(i===0 || !base.corpValue) return "—";
+      var d = s.corpValue-base.corpValue;
+      return (d>0?"+":"")+(d/base.corpValue*100).toFixed(1)+"% ("+(d>0?"+":"")+eok(d)+"억)";
+    })});
+  }
+
+  var chart = multi ? '<div class="p-break"><p class="p-sub">4. 기업가치 추이</p><div class="p-chart">'+chartSVG(cols)+'</div></div>' : "";
+
   $("printSheet").innerHTML =
     '<div class="p-h"><h1>'+(S.company||"비상장주식")+' 주식평가</h1>'
     + '<span>평가기준일 '+(S.baseDate||"—")+'  ·  출력일 '+new Date().toLocaleDateString("ko-KR")+'  ·  상증세법 §63 보충적 평가방법</span></div>'
-    + '<div class="p-final"><span class="k">1주당 평가액 (최종)</span><span class="v">'+num(r.final)+'원</span></div>'
-    + '<p class="p-sub">1. 평가 기초자료</p>'
-    + '<table class="p-t"><tbody>'
-    + '<tr><th>발행주식수</th><td>'+num(S.shares)+'주</td></tr>'
-    + rows
-    + '<tr><th>순자산가액</th><td>'+num(S.netAsset)+'원</td></tr>'
-    + '<tr><th>평가 유형 / 환원율</th><td>'+typeLabel+' / '+S.rate+'%</td></tr>'
-    + '</tbody></table>'
-    + '<p class="p-sub">2. 평가 산출내역</p>'
-    + '<table class="p-t"><tbody>'
-    + '<tr><th>주당 순손익 가중평균액</th><td>'+num(r.wAvgPS)+'원</td></tr>'
-    + '<tr><th>1주당 순손익가치</th><td>'+num(r.earn)+'원</td></tr>'
-    + '<tr><th>영업권 평가액</th><td>'+num(r.goodwill)+'원</td></tr>'
-    + '<tr><th>1주당 순자산가치</th><td>'+num(r.asset)+'원</td></tr>'
-    + '<tr><th>가중평균가액</th><td>'+num(r.weighted)+'원</td></tr>'
-    + '<tr><th>평가하한 (순자산가치의 '+S.floorPct+'%)</th><td>'+num(r.floor)+'원</td></tr>'
-    + '<tr class="hl"><th>1주당 평가액 (최종)</th><td>'+num(r.final)+'원</td></tr>'
-    + '</tbody></table>'
-    + '<p class="p-sub">3. 지분가치</p>'
-    + '<table class="p-t"><tbody>'
-    + '<tr><th>기업가치 (전체 지분)</th><td>'+num(r.corpValue)+'원 ('+eok(r.corpValue)+'억원)</td></tr>'
-    + '<tr><th>평가 지분율</th><td>'+S.holdRatio+'%</td></tr>'
-    + '<tr class="hl"><th>보유지분가치</th><td>'+num(r.holdValue)+'원 ('+eok(r.holdValue)+'억원)</td></tr>'
-    + '</tbody></table>'
-    + cmpPrintHTML()
+    + band
+    + '<p class="p-sub">1. 평가 기초자료</p>' + table(t1)
+    + '<p class="p-sub">2. 평가 산출내역</p>' + table(t2)
+    + '<p class="p-sub">3. 지분가치</p>' + table(t3)
+    + chart
     + '<p class="p-note">본 계산은 상속세 및 증여세법 제63조, 같은 법 시행령 제54조의 보충적 평가방법에 따라 '
     + '입력된 재무수치를 기준으로 약식 산출한 참고자료입니다. 실제 신고 시에는 세무조정 후 순손익액, 자산·부채의 '
     + '상증세법상 평가액, 최대주주 할증평가 등이 반영되어 결과가 달라질 수 있으므로 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>';
