@@ -71,7 +71,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .lrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);transition:background .12s;margin:0 -6px}
 .lrow:last-child{border-bottom:0}
 .lrow:hover{background:var(--sub)}
-.lrow > label{flex:0 1 auto;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted)}
+.lrow > label{flex:0 1 auto;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
 .lrow .tag{
   font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;
   padding:1px 5px;border-radius:2px;margin-left:6px;vertical-align:1px;text-transform:uppercase;
@@ -316,6 +316,24 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .toast.err{background:#9E2F2A}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ── PDF 전달 시트 ────────────────────── */
+.pdfbar{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;
+  width:min(420px,calc(100vw - 24px));background:var(--paper);border:1px solid var(--line-2);
+  border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.20);padding:15px 16px 14px;
+}
+.pdfbar[hidden]{display:none}
+.pb-t{font-family:var(--serif);font-size:14.5px;font-weight:700;margin-bottom:3px}
+.pb-n{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-bottom:11px;word-break:break-all}
+.pb-btns{display:flex;gap:7px}
+.pb-btns button{
+  flex:1 1 0;padding:11px 6px;border-radius:8px;border:1px solid var(--line-2);
+  background:var(--paper);font-size:13px;font-weight:700;cursor:pointer;
+}
+.pb-btns button.key{background:var(--accent);border-color:var(--accent);color:#fff}
+.pb-btns button.ghost{flex:0 0 auto;width:52px;color:var(--faint);font-weight:600}
+.pb-h{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:10px}
 
 /* ── report sheet (print & PDF export) ── */
 #printSheet{display:none}
@@ -596,6 +614,16 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 <!-- ═══ 인쇄 · PDF 전용 ═══ -->
 <div id="printSheet"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="pdfbar" id="pdfbar" hidden>
+  <div class="pb-t">PDF가 준비되었습니다</div>
+  <span class="pb-n" id="pbName"></span>
+  <div class="pb-btns">
+    <button type="button" class="key" id="pbShare">공유 · 저장</button>
+    <button type="button" id="pbOpen">새 창에서 열기</button>
+    <button type="button" class="ghost" id="pbClose">닫기</button>
+  </div>
+  <p class="pb-h" id="pbHint">저장이 안 되면 <b>새 창에서 열기</b> 후 브라우저 공유 메뉴에서 저장하세요.</p>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -1239,6 +1267,27 @@ function breakPoints(sheet, scale){
   out.sort(function(a,b){ return a-b; });
   return out;
 }
+var pdfBlobUrl = null, pdfFile = null;
+function deliverPdf(blob, name){
+  if(pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
+  pdfBlobUrl = URL.createObjectURL(blob);
+  try{ pdfFile = new File([blob], name, {type:"application/pdf"}); }catch(e){ pdfFile = null; }
+  $("pbName").textContent = name;
+  var canShare = !!(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]}));
+  $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
+  $("pdfbar").hidden = false;
+  hideToast();
+}
+function downloadPdf(){
+  var a = document.createElement("a");
+  a.href = pdfBlobUrl; a.download = $("pbName").textContent;
+  a.rel = "noopener"; document.body.appendChild(a); a.click();
+  setTimeout(function(){ a.remove(); }, 400);
+}
+function openPdf(){
+  var w = window.open(pdfBlobUrl, "_blank");
+  if(!w) window.location.href = pdfBlobUrl;
+}
 function pdfName(){
   var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
   return (S.company || "비상장주식").replace(/[\\/:*?"<>|]/g,"") + "_주식평가_"
@@ -1287,15 +1336,35 @@ async function savePdfFile(){
       first = false;
       start = end;
     }
-    pdf.save(pdfName());
-    toast("PDF를 저장했습니다");
+    deliverPdf(pdf.output("blob"), pdfName());
   }catch(e){
     sheet.classList.remove("render");
     toast("PDF를 만들지 못했습니다. 인쇄 화면으로 엽니다.", "err");
     try{ window.print(); }catch(e2){}
   }
 }
+function resetPdfBar(){
+  $("pdfbar").hidden = true;
+  if(pdfBlobUrl){ URL.revokeObjectURL(pdfBlobUrl); pdfBlobUrl = null; pdfFile = null; }
+}
+$("pbShare").addEventListener("click", async function(){
+  if(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]})){
+    try{
+      await navigator.share({files:[pdfFile], title:$("pbName").textContent});
+      $("pdfbar").hidden = true;
+      return;
+    }catch(e){
+      if(e && e.name === "AbortError") return;
+    }
+  }
+  downloadPdf();
+  toast("저장되지 않으면 '새 창에서 열기'를 눌러주세요");
+});
+$("pbOpen").addEventListener("click", function(){ openPdf(); });
+$("pbClose").addEventListener("click", function(){ $("pdfbar").hidden = true; });
+
 $("btnPrint").addEventListener("click", function(){
+  resetPdfBar();
   if(wantsFile()) savePdfFile();
   else window.print();
 });
