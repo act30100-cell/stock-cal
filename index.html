@@ -14,7 +14,7 @@
   --ink:#17181C;
   --ink-2:#3B3E45;
   --muted:#767B84;
-  --faint:#A4A8AF;
+  --faint:#828892;
   --paper:#FFFFFF;
   --bg:#E9E8E4;
   --sub:#F6F5F2;
@@ -32,7 +32,7 @@
 html,body{margin:0;padding:0}
 body{
   font-family:var(--sans);background:var(--bg);color:var(--ink);
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;
   letter-spacing:-0.01em;word-break:keep-all;overflow-wrap:break-word;
 }
 button,input,select{font-family:inherit;font-size:inherit;color:inherit}
@@ -71,7 +71,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .lrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);transition:background .12s;margin:0 -6px}
 .lrow:last-child{border-bottom:0}
 .lrow:hover{background:var(--sub)}
-.lrow > label{flex:0 1 auto;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.lrow > label{flex:0 1 auto;min-width:0;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
 .lrow .tag{
   font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;
   padding:1px 5px;border-radius:2px;margin-left:6px;vertical-align:1px;text-transform:uppercase;
@@ -82,20 +82,20 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .lrow input{
   flex:0 1 160px;width:160px;min-width:84px;text-align:right;background:transparent;
   border:0;border-bottom:1px solid var(--line-2);padding:4px 3px;
-  font-family:var(--mono);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;
+  font-family:var(--mono);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;
 }
-.lrow input.txt{text-align:left;font-family:var(--sans);font-size:14px;font-weight:600;width:190px}
+.lrow input.txt{text-align:left;font-family:var(--sans);font-size:15px;font-weight:600;width:190px}
 .lrow input::placeholder{color:var(--faint);font-weight:400}
 .lrow input:focus{outline:none;border-bottom-color:var(--accent);border-bottom-width:1.5px}
 .lrow .unit{flex:0 0 auto;width:20px;font-size:11.5px;color:var(--faint);font-weight:500}
 .selrow{padding:12px 0 4px}
-.selrow label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.selrow label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
 select{
-  width:100%;padding:9px 11px;border:1px solid var(--line-2);border-radius:var(--r);
-  background:var(--paper);font-size:13.5px;font-weight:500;
+  width:100%;padding:10px 11px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:var(--paper);font-size:14.5px;font-weight:500;
 }
 select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
-.hint{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:9px}
+.hint{font-size:12.5px;color:var(--faint);line-height:1.75;margin-top:10px}
 
 /* ── dropzone ─────────────────────────── */
 .drop{
@@ -114,7 +114,7 @@ select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--
 /* ── year table ───────────────────────── */
 table.grid-t{width:100%;border-collapse:collapse;margin-top:4px}
 table.grid-t th{
-  font-family:var(--mono);font-size:10px;font-weight:500;color:var(--faint);letter-spacing:.05em;
+  font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--faint);letter-spacing:.05em;
   text-transform:uppercase;text-align:right;padding:0 3px 8px;border-bottom:1px solid var(--line);
 }
 table.grid-t th:first-child{text-align:left}
@@ -122,7 +122,7 @@ table.grid-t td{padding:5px 0;border-bottom:1px solid var(--line)}
 table.grid-t td+td{padding-left:8px}
 table.grid-t input{
   width:100%;text-align:right;background:transparent;border:0;border-bottom:1px solid transparent;
-  padding:5px 3px;font-family:var(--mono);font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums;
+  padding:6px 3px;font-family:var(--mono);font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;
 }
 table.grid-t input:focus{outline:none;border-bottom-color:var(--accent)}
 table.grid-t input.w-year{text-align:left;color:var(--muted)}
@@ -135,6 +135,8 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 }
 .steprow button:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-tint)}
 .steprow button:active{transform:translateY(1px)}
+.eok{display:block;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:3px;min-height:14px}
+.grid-t .eok{margin-top:1px;padding-right:3px}
 .chiprow{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
 .chip{
   border:1px solid var(--line-2);background:var(--paper);border-radius:2px;padding:4px 9px;
@@ -181,24 +183,24 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 .step-body{min-width:0}
 .step-t{font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 10px;line-height:1.4}
 .formula{
-  font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--ink-2);
+  font-family:var(--mono);font-size:12px;line-height:1.95;color:var(--ink-2);
   background:var(--sub);border-left:2px solid var(--line-2);padding:10px 13px;border-radius:0 2px 2px 0;
   overflow-x:auto;white-space:pre;
 }
 .out{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:11px;padding-top:9px;border-top:1px solid var(--line)}
-.out .k{font-size:12.5px;font-weight:600;color:var(--muted)}
+.out .k{font-size:13px;font-weight:600;color:var(--muted)}
 .out .v{font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
 .step.final .out{border-top:1.5px solid var(--ink)}
 .step.final .out .k{color:var(--ink);font-weight:700}
 .step.final .out .v{color:var(--accent-deep);font-size:22px}
-.subout{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:6px}
+.subout{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:6px}
 .crosscheck{
   margin-top:16px;font-size:12.5px;padding:11px 13px;border-radius:var(--r);
   background:var(--sub);border:1px solid var(--line);color:var(--muted);display:none;
 }
 .crosscheck.show{display:block}
 .crosscheck b{color:var(--ink);font-family:var(--mono);font-weight:600}
-.footnote{font-size:11.5px;color:var(--faint);line-height:1.75;margin-top:15px;padding:0 6px}
+.footnote{font-size:12px;color:var(--faint);line-height:1.8;margin-top:15px;padding:0 6px}
 .footnote p{margin:0 0 3px;padding-left:11px;text-indent:-11px}
 
 /* ── tabs & panes ─────────────────────── */
@@ -238,6 +240,11 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   .pane{display:none}
   .pane.is-on{display:block}
   .card,.plate,.detail,.cmp{margin-bottom:14px}
+  .lrow input,table.grid-t input,select,.steprow button{font-size:16px}
+  .pane .nextbtn{display:block}
+  .lrow{padding:10px 6px}
+  .card-h h2{font-size:16.5px}
+  .hint{font-size:12.5px}
   .detail summary{padding:14px 16px}
   .detail .rail{padding:6px 14px 14px}
   .step{grid-template-columns:38px minmax(0,1fr);padding:15px 0}
@@ -246,6 +253,40 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   .cmp{padding:18px 16px 20px}
   .rail{padding-left:14px;padding-right:14px}
 }
+
+.adv{margin-top:14px;border-top:1px solid var(--line)}
+.adv summary{
+  list-style:none;cursor:pointer;padding:12px 2px 4px;display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;color:var(--muted);
+}
+.adv summary::-webkit-details-marker{display:none}
+.adv summary:hover{color:var(--ink)}
+.adv summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.a-s{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--faint)}
+.adv[open] .d-x{transform:rotate(-135deg) translate(-3px,-3px)}
+
+/* ── 다음 단계 버튼 (모바일) ──────────── */
+.nextbtn{
+  display:none;width:100%;margin-top:14px;padding:14px;border-radius:9px;border:1px solid var(--ink);
+  background:var(--ink);color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+}
+.nextbtn.ghost{background:var(--paper);color:var(--ink)}
+.nextbtn:active{opacity:.85}
+.resetline{margin-top:16px;text-align:center}
+.resetline button{
+  border:0;background:transparent;color:var(--faint);font-size:12.5px;font-weight:600;
+  cursor:pointer;padding:8px 12px;border-radius:6px;text-decoration:underline;text-underline-offset:3px;
+}
+.resetline button:hover{color:var(--accent-deep)}
+
+/* ── 첫 사용 안내 ─────────────────────── */
+.guide{
+  display:flex;flex-direction:column;gap:6px;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--r);padding:13px 16px;margin-bottom:18px;font-size:12.5px;color:var(--muted);line-height:1.6;
+}
+.guide b{color:var(--ink);font-weight:700}
+.guide span{display:flex;gap:2px}
+.guide em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--accent-deep);font-weight:600;margin-right:4px}
 
 /* ── collapsible detail ───────────────── */
 .detail{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);margin-top:18px}
@@ -282,9 +323,11 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 .sbtn:disabled{opacity:.4;cursor:not-allowed}
 .cmp-empty{padding:28px 8px;text-align:center;color:var(--faint);font-size:12.5px;line-height:1.8}
 .cmp-empty b{display:block;font-family:var(--serif);font-size:14.5px;color:var(--muted);font-weight:700;margin-bottom:5px}
-.cmp-scroll{overflow-x:auto;margin-top:14px}
+.scroll-hint{margin:12px 0 -4px;text-align:center;font-size:11.5px;color:var(--faint);font-weight:600}
+.scroll-hint[hidden]{display:none}
+.cmp-scroll{overflow-x:auto;margin-top:14px;-webkit-overflow-scrolling:touch}
 table.cmp-t{width:100%;border-collapse:collapse;min-width:440px}
-table.cmp-t th,table.cmp-t td{padding:7px 10px;border-bottom:1px solid var(--line);font-size:12.5px;text-align:right;white-space:nowrap}
+table.cmp-t th,table.cmp-t td{padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px;text-align:right;white-space:nowrap}
 table.cmp-t th.rh{text-align:left;font-weight:600;color:var(--muted);width:34%;white-space:normal}
 table.cmp-t td{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500}
 table.cmp-t thead th{border-bottom:1px solid var(--line-2);padding-bottom:9px;vertical-align:bottom}
@@ -294,8 +337,10 @@ table.cmp-t thead th{border-bottom:1px solid var(--line-2);padding-bottom:9px;ve
 }
 .sc-name:focus{outline:none;border-bottom-color:var(--accent);border-bottom-style:solid}
 .sc-del{
-  border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:13px;padding:0 0 0 5px;line-height:1;
+  border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:14px;
+  padding:6px;margin:-6px -6px -6px 0;line-height:1;border-radius:6px;
 }
+.sc-del:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .sc-del:hover{color:var(--accent-deep)}
 table.cmp-t tr.sec th{
   font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
@@ -441,7 +486,6 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       <h1>비상장주식 평가<span class="dot"></span></h1>
       <p>상증세법 §63 · 시행령 §54 보충적 평가방법</p>
     </div>
-    <button class="btn" id="btnReset" type="button">입력값 지우기</button>
     <button class="btn btn-primary" id="btnPrint" type="button">PDF로 저장</button>
   </div>
 </header>
@@ -466,6 +510,11 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 <div class="wrap">
   <!-- ═══ 입력 ═══ -->
   <section class="pane is-on" id="paneInput">
+    <div class="guide">
+      <span><em>①</em><b>리포트를 올리거나</b> 값을 직접 입력</span>
+      <span><em>②</em><b>결과</b>에서 1주당 평가액 확인</span>
+      <span><em>③</em>값을 바꿔 <b>시나리오 비교</b></span>
+    </div>
     <div class="card">
       <div class="card-h"><h2>진단 리포트 불러오기</h2><span>PDF</span></div>
       <div class="drop" id="drop" tabindex="0" role="button" aria-label="리포트 PDF 선택">
@@ -520,6 +569,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <input type="text" id="netAsset" inputmode="numeric" placeholder="8,692,305,000" />
         <span class="unit">원</span>
       </div>
+      <span class="eok" id="naEok"></span>
       <div class="steprow" id="naSteps">
         <button type="button" data-step="-1000000000">−10억</button>
         <button type="button" data-step="-500000000">−5억</button>
@@ -527,6 +577,8 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <button type="button" data-step="1000000000">+10억</button>
       </div>
       <div class="chiprow" id="equityChips"></div>
+      <details class="adv" id="advBox">
+      <summary><span class="a-t">고급 설정</span><span class="a-s" id="advSum"></span><span class="d-x" aria-hidden="true"></span></summary>
       <div class="selrow">
         <label for="corpType">법인 유형</label>
         <select id="corpType">
@@ -555,8 +607,11 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         </select>
         <div class="hint">(순손익 가중평균액 × 50% − 순자산가액 × 10%) × 3.7908 · 음수면 0</div>
       </div>
+      </details>
       <div id="netAssetHint" hidden></div>
     </div>
+    <button class="nextbtn" type="button" id="goResult">결과 보기 →</button>
+    <div class="resetline"><button type="button" id="btnReset">입력값 모두 지우기</button></div>
   </section>
 
   <!-- ═══ 결과 ═══ -->
@@ -639,6 +694,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <p>· 원 단위 반올림 방식에 따라 실제 신고서와 1원 내외 차이가 날 수 있습니다.</p>
         <p>· 재무제표 기준 약식 계산입니다. 실행 전 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>
       </div>
+      <button class="nextbtn ghost" type="button" id="goSave">이 값을 시나리오로 담기</button>
   </section>
 
   <!-- ═══ 비교 ═══ -->
@@ -657,6 +713,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         지금 값을 <strong>현재 값 담기</strong>로 기준안에 담고,<br>
         순손익액·순자산가액을 바꿔가며 3~4개를 더 담으면 여기에 비교표와 그래프가 나타납니다.
       </div>
+      <p class="scroll-hint" id="scrollHint" hidden>← 표를 좌우로 밀어 보세요 →</p>
       <div class="cmp-scroll" id="cmpScroll" hidden>
         <table class="cmp-t"><thead id="cmpHead"></thead><tbody id="cmpBody"></tbody></table>
       </div>
@@ -801,6 +858,12 @@ function render(){
 
   $("rCorp").innerHTML = eok(r.corpValue)+"<small>억원</small>";
   $("rHold").innerHTML = eok(r.holdValue)+"<small>억원</small>";
+  $("advSum").textContent = advSummary();
+  $("naEok").textContent = S.netAsset ? "= " + eok(S.netAsset) + "억원" : "";
+  document.querySelectorAll("#yearBody .eok").forEach(function(el){
+    var v = S.years[+el.dataset.e].ni;
+    el.textContent = v ? eok(v) + "억" : "";
+  });
   $("miniPS").textContent = num(r.final)+"원";
   $("miniCorp").textContent = eok(r.corpValue)+"억";
 
@@ -908,7 +971,7 @@ function renderCompare(){
   $("cmpEmpty").hidden = has;
   $("cmpScroll").hidden = !has;
   $("chartWrap").hidden = sc.length<2;
-  if(!has){ $("chart").innerHTML=""; return; }
+  if(!has){ $("chart").innerHTML=""; $("scrollHint").hidden = true; return; }
 
   var m = cmpModel();
   var head = "<tr><th class='rh'>구분</th>";
@@ -949,6 +1012,10 @@ function renderCompare(){
     });
   });
   drawChart();
+  setTimeout(function(){
+    var sc = $("cmpScroll");
+    $("scrollHint").hidden = !(sc.scrollWidth > sc.clientWidth + 4);
+  }, 30);
 }
 
 function drawChart(){
@@ -1114,7 +1181,7 @@ function buildYearRows(){
   S.years.forEach(function(o,i){
     var tr = document.createElement("tr");
     tr.innerHTML = '<td><input type="text" class="w-year" data-k="y" data-i="'+i+'" value="'+(o.y||"")+'" placeholder="2023"></td>'
-                 + '<td><input type="text" inputmode="numeric" data-k="ni" data-i="'+i+'" value="'+(o.ni?o.ni.toLocaleString("ko-KR"):"")+'" placeholder="0"></td>'
+                 + '<td><input type="text" inputmode="numeric" data-k="ni" data-i="'+i+'" value="'+(o.ni?o.ni.toLocaleString("ko-KR"):"")+'" placeholder="0"><span class="eok" data-e="'+i+'"></span></td>'
                  + '<td><input type="text" class="w-wt" inputmode="numeric" data-k="w" data-i="'+i+'" value="'+o.w+'"></td>';
     b.appendChild(tr);
   });
@@ -1295,6 +1362,15 @@ bind("company","company",false,false);
 bind("baseDate","baseDate",false,false);
 bind("shares","shares",true,true);
 bind("netAsset","netAsset",true,true);
+function advSummary(){
+  var t = {general:"일반법인 60:40", real50:"부동산 50%↑ 40:60", real80:"순자산가치만"}[S.corpType];
+  return t + " · 환원율 " + S.rate + "% · 하한 " + S.floorPct + "%";
+}
+$("goResult").addEventListener("click", function(){ setPane("result"); });
+$("goSave").addEventListener("click", function(){
+  saveScenario();
+  setPane("compare");
+});
 $("naSteps").querySelectorAll("button").forEach(function(b){
   b.addEventListener("click", function(){
     var v = Math.max(0, S.netAsset + Number(b.dataset.step));
