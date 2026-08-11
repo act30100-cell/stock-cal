@@ -197,6 +197,53 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 .footnote{font-size:11.5px;color:var(--faint);line-height:1.75;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .footnote p{margin:0 0 3px;padding-left:11px;text-indent:-11px}
 
+/* ── scenario compare ─────────────────── */
+.cmp{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px 24px 24px}
+.cmp-h{display:flex;align-items:center;gap:10px;padding-bottom:11px;border-bottom:1.5px solid var(--ink);flex-wrap:wrap}
+.cmp-h h2{margin:0;font-family:var(--serif);font-size:15.5px;font-weight:700}
+.cmp-h .count{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.04em}
+.cmp-h .acts{margin-left:auto;display:flex;gap:7px}
+.sbtn{
+  border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+  padding:6px 12px;border-radius:var(--r);font-size:12.5px;font-weight:600;cursor:pointer;transition:.14s;
+}
+.sbtn:hover{border-color:var(--ink)}
+.sbtn.key{background:var(--ink);border-color:var(--ink);color:#fff}
+.sbtn.key:hover{background:#000}
+.sbtn:disabled{opacity:.4;cursor:not-allowed}
+.cmp-empty{padding:28px 8px;text-align:center;color:var(--faint);font-size:12.5px;line-height:1.8}
+.cmp-empty b{display:block;font-family:var(--serif);font-size:14.5px;color:var(--muted);font-weight:700;margin-bottom:5px}
+.cmp-scroll{overflow-x:auto;margin-top:14px}
+table.cmp-t{width:100%;border-collapse:collapse;min-width:440px}
+table.cmp-t th,table.cmp-t td{padding:7px 10px;border-bottom:1px solid var(--line);font-size:12.5px;text-align:right;white-space:nowrap}
+table.cmp-t th.rh{text-align:left;font-weight:600;color:var(--muted);width:34%;white-space:normal}
+table.cmp-t td{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500}
+table.cmp-t thead th{border-bottom:1px solid var(--line-2);padding-bottom:9px;vertical-align:bottom}
+.sc-name{
+  width:86px;text-align:right;background:transparent;border:0;border-bottom:1px dashed var(--line-2);
+  font-family:var(--sans);font-size:12.5px;font-weight:700;padding:2px 0;color:var(--ink);
+}
+.sc-name:focus{outline:none;border-bottom-color:var(--accent);border-bottom-style:solid}
+.sc-del{
+  border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:13px;padding:0 0 0 5px;line-height:1;
+}
+.sc-del:hover{color:var(--accent-deep)}
+table.cmp-t tr.sec th{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
+  padding-top:14px;font-weight:500;border-bottom:0;
+}
+table.cmp-t tr.sec td{border-bottom:0}
+table.cmp-t tr.key th,table.cmp-t tr.key td{border-top:1.5px solid var(--ink);border-bottom:0;padding-top:9px;font-weight:700}
+table.cmp-t tr.key th{color:var(--ink)}
+table.cmp-t tr.key td{font-size:14.5px;color:var(--accent-deep)}
+table.cmp-t tr.delta th{color:var(--faint);font-weight:500;font-size:11.5px}
+table.cmp-t tr.delta td{font-size:11.5px;color:var(--faint);border-bottom:0}
+table.cmp-t tr.delta td.up{color:var(--accent-deep)}
+table.cmp-t tr.delta td.dn{color:#3E7A5E}
+.chart-wrap{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.chart-lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.chart-wrap svg{width:100%;height:auto;display:block}
+
 /* ── print ────────────────────────────── */
 #printSheet{display:none}
 @media print{
@@ -220,6 +267,15 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   table.p-t td{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
   table.p-t tr.hl th{font-weight:800;color:#000}
   table.p-t tr.hl th,table.p-t tr.hl td{border-top:1pt solid #17181C;border-bottom:1pt solid #17181C;font-weight:700}
+  .p-break{page-break-inside:avoid}
+  table.p-c{width:100%;border-collapse:collapse;margin-bottom:14px}
+  table.p-c th,table.p-c td{border-bottom:0.5pt solid #CCC;padding:5px 6px;font-size:9pt;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  table.p-c th.rh{text-align:left;width:30%;color:#444;font-weight:600;font-family:var(--sans)}
+  table.p-c thead th{border-bottom:1pt solid #17181C;font-weight:700;font-family:var(--sans)}
+  table.p-c tr.key th,table.p-c tr.key td{border-top:1pt solid #17181C;font-weight:800}
+  table.p-c tr.dl th,table.p-c tr.dl td{color:#666;font-size:8.5pt;border-bottom:0}
+  .p-chart{margin:6px 0 16px}
+  .p-chart svg{width:100%;height:auto}
   .p-note{font-size:8.5pt;color:#666;line-height:1.7;border-top:0.5pt solid #CCC;padding-top:9px}
 }
 </style>
@@ -399,6 +455,28 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
         <p>· 재무제표 기준 약식 계산입니다. 실행 전 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>
       </div>
     </div>
+    <div class="cmp">
+      <div class="cmp-h">
+        <h2>시나리오 비교</h2>
+        <span class="count" id="scCount">0 / 6</span>
+        <div class="acts">
+          <button class="sbtn" id="btnClearSc" type="button">모두 지우기</button>
+          <button class="sbtn key" id="btnSave" type="button">현재 값 담기</button>
+        </div>
+      </div>
+      <div id="cmpEmpty" class="cmp-empty">
+        <b>담긴 시나리오가 없습니다</b>
+        지금 값을 <strong>현재 값 담기</strong>로 기준안에 담고,<br>
+        순손익액·순자산가액을 바꿔가며 3~4개를 더 담으면 여기에 비교표와 그래프가 나타납니다.
+      </div>
+      <div class="cmp-scroll" id="cmpScroll" hidden>
+        <table class="cmp-t"><thead id="cmpHead"></thead><tbody id="cmpBody"></tbody></table>
+      </div>
+      <div class="chart-wrap" id="chartWrap" hidden>
+        <div class="chart-lab">기업가치 추이 (억원)</div>
+        <div id="chart"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -415,7 +493,7 @@ var S = {
   company:"", baseDate:"", shares:0, holdRatio:100,
   years:[{y:"",ni:0,w:1},{y:"",ni:0,w:2},{y:"",ni:0,w:3}],
   netAsset:0, corpType:"general", rate:10, floorPct:80, goodwillOn:1,
-  equitySeries:[], reportPerShare:null,
+  equitySeries:[], reportPerShare:null, scenarios:[],
   auto:{}
 };
 var lastFinal = null;
@@ -537,6 +615,181 @@ function render(){
   buildPrint(r);
 }
 
+/* ── scenarios ─────────────────────────── */
+var MAX_SC = 6;
+
+function snapshot(){
+  var r = calc();
+  var n = S.scenarios.length;
+  return {
+    name: n===0 ? "기준" : "안 "+n,
+    shares:S.shares, netAsset:S.netAsset, rate:S.rate, corpType:S.corpType,
+    years:S.years.map(function(o){ return {y:o.y, ni:o.ni, w:o.w}; }),
+    earn:r.earn, asset:r.asset, final:r.final, corpValue:r.corpValue
+  };
+}
+function saveScenario(){
+  if(S.scenarios.length>=MAX_SC) return;
+  S.scenarios.push(snapshot());
+  renderCompare(); render();
+}
+function cmpModel(){
+  var sc = S.scenarios, base = sc[0];
+  if(!base) return null;
+  var rows = [];
+  rows.push({sec:"입력값"});
+  rows.push({label:"발행주식수", vals:sc.map(function(s){ return num(s.shares)+"주"; })});
+  rows.push({label:"대상 사업연도", vals:sc.map(function(s){
+    return s.years.map(function(o){ return o.y || "—"; }).join("·");
+  })});
+  for(var i=0;i<3;i++){
+    (function(i){
+      rows.push({label:"순손익액 "+["①","②","③"][i]+" (가중치 "+(base.years[i]?base.years[i].w:i+1)+")",
+        vals:sc.map(function(s){ return s.years[i] ? eok(s.years[i].ni)+"억" : "—"; })});
+    })(i);
+  }
+  rows.push({label:"순자산가액", vals:sc.map(function(s){ return eok(s.netAsset)+"억"; })});
+  rows.push({sec:"평가액"});
+  rows.push({label:"1주당 순손익가치", vals:sc.map(function(s){ return num(s.earn)+"원"; })});
+  rows.push({label:"1주당 순자산가치", vals:sc.map(function(s){ return num(s.asset)+"원"; })});
+  rows.push({key:true, label:"1주당 평가액", vals:sc.map(function(s){ return num(s.final)+"원"; })});
+  rows.push({key:true, label:"기업가치", vals:sc.map(function(s){ return eok(s.corpValue)+"억원"; })});
+  rows.push({delta:true, label:"기준 대비", vals:sc.map(function(s,i){
+    if(i===0 || !base.corpValue) return "—";
+    var d = s.corpValue - base.corpValue;
+    var p = d/base.corpValue*100;
+    return {t:(d>0?"+":"")+p.toFixed(1)+"%  ("+(d>0?"+":"")+eok(d)+"억)", up:d>0, dn:d<0};
+  })});
+  return {cols:sc.map(function(s){ return s.name; }), rows:rows};
+}
+
+function renderCompare(){
+  var sc = S.scenarios;
+  $("scCount").textContent = sc.length+" / "+MAX_SC;
+  $("btnSave").disabled = sc.length>=MAX_SC;
+  var has = sc.length>0;
+  $("cmpEmpty").hidden = has;
+  $("cmpScroll").hidden = !has;
+  $("chartWrap").hidden = sc.length<2;
+  if(!has){ $("chart").innerHTML=""; return; }
+
+  var m = cmpModel();
+  var head = "<tr><th class='rh'>구분</th>";
+  sc.forEach(function(s,i){
+    head += "<th><input class='sc-name' data-i='"+i+"' value='"+s.name.replace(/'/g,"&#39;")+"' aria-label='시나리오 이름'>"
+          + "<button class='sc-del' data-d='"+i+"' type='button' title='삭제'>✕</button></th>";
+  });
+  head += "</tr>";
+  $("cmpHead").innerHTML = head;
+
+  var body = "";
+  m.rows.forEach(function(r){
+    if(r.sec){
+      body += "<tr class='sec'><th class='rh'>"+r.sec+"</th>"+sc.map(function(){return "<td></td>";}).join("")+"</tr>";
+      return;
+    }
+    var cls = r.key ? " class='key'" : (r.delta ? " class='delta'" : "");
+    body += "<tr"+cls+"><th class='rh'>"+r.label+"</th>";
+    r.vals.forEach(function(v){
+      if(typeof v === "object" && v){ body += "<td class='"+(v.up?"up":v.dn?"dn":"")+"'>"+v.t+"</td>"; }
+      else { body += "<td>"+v+"</td>"; }
+    });
+    body += "</tr>";
+  });
+  $("cmpBody").innerHTML = body;
+
+  $("cmpHead").querySelectorAll(".sc-name").forEach(function(el){
+    el.addEventListener("input", function(){
+      S.scenarios[+el.dataset.i].name = el.value;
+      drawChart(); buildPrint(calc());
+    });
+  });
+  $("cmpHead").querySelectorAll(".sc-del").forEach(function(el){
+    el.addEventListener("click", function(){
+      S.scenarios.splice(+el.dataset.d,1);
+      S.scenarios.forEach(function(s,i){ if(/^(기준|안 \d+)$/.test(s.name)) s.name = i===0?"기준":"안 "+i; });
+      renderCompare(); render();
+    });
+  });
+  drawChart();
+}
+
+function drawChart(){
+  var sc = S.scenarios;
+  if(sc.length<2){ $("chart").innerHTML=""; return; }
+  $("chart").innerHTML = chartSVG(sc);
+}
+
+function chartSVG(sc){
+  var W=700, H=250, L=52, R=16, T=38, B=40;
+  var pw = W-L-R, ph = H-T-B;
+  var vals = sc.map(function(s){ return s.corpValue/1e8; });
+  var max = Math.max.apply(null, vals.concat([0.0001]));
+  var yMax = niceMax(max*1.18);
+  var band = pw/sc.length;
+  var bw = Math.min(74, band*0.46);
+  var y0 = T+ph;
+  var baseV = vals[0];
+  var yBase = y0 - (baseV/yMax)*ph;
+  var s = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">';
+
+  // y grid
+  for(var g=0; g<=2; g++){
+    var gv = yMax*g/2, gy = y0-(gv/yMax)*ph;
+    s += '<line x1="'+L+'" y1="'+gy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+gy.toFixed(1)+'" stroke="#EDEBE6" stroke-width="1"/>';
+    s += '<text x="'+(L-9)+'" y="'+(gy+3.5).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#A4A8AF">'+(gv===0?"0":gv>=10?gv.toFixed(0):gv.toFixed(1))+'</text>';
+  }
+  // baseline
+  s += '<line x1="'+L+'" y1="'+yBase.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yBase.toFixed(1)+'" stroke="#17181C" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>';
+  s += '<text x="'+(W-R)+'" y="'+(yBase-6).toFixed(1)+'" text-anchor="end" font-size="9" fill="#767B84">기준</text>';
+
+  sc.forEach(function(o,i){
+    var v = vals[i];
+    var x = L + band*i + (band-bw)/2;
+    var h = Math.max(1,(v/yMax)*ph);
+    var y = y0-h;
+    var isBase = i===0;
+    s += '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+(isBase?"#C9C6BE":"#E3E1DB")+'"/>';
+    if(!isBase && baseV>0){
+      var d = v-baseV, p = d/baseV*100;
+      s += '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="3" fill="'+(d>0?"#F37321":"#3E7A5E")+'"/>';
+      s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-20).toFixed(1)+'" text-anchor="middle" font-size="10" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5" fill="'+(d>0?"#C9520A":"#3E7A5E")+'">'+(d>0?"+":"")+p.toFixed(1)+'%</text>';
+    }
+    s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" text-anchor="middle" font-size="12.5" font-weight="600" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5" fill="#17181C">'+v.toFixed(2)+'</text>';
+    s += '<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y0+18).toFixed(1)+'" text-anchor="middle" font-size="11" fill="#767B84" font-family="Pretendard, sans-serif">'+escapeHtml(o.name)+'</text>';
+  });
+  s += '<line x1="'+L+'" y1="'+y0+'" x2="'+(W-R)+'" y2="'+y0+'" stroke="#CFCCC4" stroke-width="1"/>';
+  s += '</svg>';
+  return s;
+}
+function niceMax(v){
+  var mag = Math.pow(10, Math.floor(Math.log(v)/Math.LN10));
+  var steps = [1,1.2,1.5,2,2.5,3,4,5,6,8,10];
+  for(var i=0;i<steps.length;i++){
+    if(v <= steps[i]*mag) return steps[i]*mag;
+  }
+  return 10*mag;
+}
+function escapeHtml(t){
+  return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
+}
+
+function cmpPrintHTML(){
+  if(S.scenarios.length<2) return "";
+  var m = cmpModel();
+  var h = '<div class="p-break"><p class="p-sub">4. 시나리오 비교</p><table class="p-c"><thead><tr><th class="rh">구분</th>'
+        + m.cols.map(function(c){ return "<th>"+escapeHtml(c)+"</th>"; }).join("") + '</tr></thead><tbody>';
+  m.rows.forEach(function(r){
+    if(r.sec) return;
+    var cls = r.key ? ' class="key"' : (r.delta ? ' class="dl"' : "");
+    h += "<tr"+cls+'><th class="rh">'+r.label+"</th>"
+       + r.vals.map(function(v){ return "<td>"+(typeof v==="object"&&v ? v.t : v)+"</td>"; }).join("")
+       + "</tr>";
+  });
+  h += '</tbody></table><div class="p-chart">'+chartSVG(S.scenarios)+'</div></div>';
+  return h;
+}
+
 /* ── print sheet ───────────────────────── */
 function buildPrint(r){
   var rows = S.years.map(function(o,i){
@@ -570,6 +823,7 @@ function buildPrint(r){
     + '<tr><th>평가 지분율</th><td>'+S.holdRatio+'%</td></tr>'
     + '<tr class="hl"><th>보유지분가치</th><td>'+num(r.holdValue)+'원 ('+eok(r.holdValue)+'억원)</td></tr>'
     + '</tbody></table>'
+    + cmpPrintHTML()
     + '<p class="p-note">본 계산은 상속세 및 증여세법 제63조, 같은 법 시행령 제54조의 보충적 평가방법에 따라 '
     + '입력된 재무수치를 기준으로 약식 산출한 참고자료입니다. 실제 신고 시에는 세무조정 후 순손익액, 자산·부채의 '
     + '상증세법상 평가액, 최대주주 할증평가 등이 반영되어 결과가 달라질 수 있으므로 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>';
@@ -769,6 +1023,13 @@ $("floorPct").addEventListener("input", function(){ S.floorPct = parseNum(this.v
 $("corpType").addEventListener("change", function(){ S.corpType = this.value; render(); });
 $("goodwillOn").addEventListener("change", function(){ S.goodwillOn = +this.value; render(); });
 
+$("btnSave").addEventListener("click", saveScenario);
+$("btnClearSc").addEventListener("click", function(){
+  if(!S.scenarios.length) return;
+  S.scenarios = [];
+  renderCompare(); render();
+});
+
 $("btnPrint").addEventListener("click", function(){ window.print(); });
 $("btnReset").addEventListener("click", function(){
   S.company=""; S.baseDate=""; S.shares=0; S.holdRatio=100; S.netAsset=0;
@@ -783,11 +1044,12 @@ $("btnReset").addEventListener("click", function(){
   S.corpType="general"; S.goodwillOn=1; S.rate=10; S.floorPct=80;
   $("status").className="status";
   $("equityChips").innerHTML="";
-  lastFinal=null;
-  buildYearRows(); render();
+  S.scenarios=[]; lastFinal=null;
+  buildYearRows(); renderCompare(); render();
 });
 
 buildYearRows();
+renderCompare();
 render();
 })();
 </script>
