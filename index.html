@@ -335,6 +335,18 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 .pb-btns button.ghost{flex:0 0 auto;width:52px;color:var(--faint);font-weight:600}
 .pb-h{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:10px}
 
+/* ── 인앱 브라우저 안내 ──────────────── */
+.inapp{background:#FBF5E7;border-bottom:1px solid #EBD9A8;padding:11px 16px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.inapp[hidden]{display:none}
+.inapp .t{font-size:12.5px;color:#7A5510;line-height:1.6;flex:1 1 100%;min-width:0}
+.inapp #inappOpen{margin-left:auto}
+.inapp .t b{color:#5A3D06}
+.inapp button{
+  border:1px solid #C79A2E;background:#fff;color:#7A5510;padding:7px 13px;border-radius:8px;
+  font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+.inapp button.x{border:0;background:transparent;color:#A9925F;padding:7px 4px;font-weight:600}
+
 /* ── 이미지 뷰어 ──────────────────────── */
 .viewer{position:fixed;inset:0;z-index:90;background:#3A3A38;display:flex;flex-direction:column}
 .viewer[hidden]{display:none}
@@ -436,6 +448,12 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   <span class="mk">1주당</span><span class="mv" id="miniPS">0원</span>
   <span class="mk">기업가치</span><span class="mv" id="miniCorp">0억</span>
 </div>
+</div>
+
+<div class="inapp" id="inappBar" hidden>
+  <span class="t"><b>카카오톡 브라우저</b>에서는 PDF 저장·새 창 열기가 막혀 있습니다. 사파리·크롬으로 열면 정상 저장됩니다.</span>
+  <button type="button" id="inappOpen">브라우저에서 열기</button>
+  <button type="button" class="x" id="inappClose">닫기</button>
 </div>
 
 <div class="wrap">
@@ -647,6 +665,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
     <button type="button" class="key" id="pbView">이미지로 보기</button>
     <button type="button" id="pbShare">공유 · 저장</button>
     <button type="button" id="pbOpen">새 창에서 열기</button>
+    <button type="button" id="pbExt" hidden>브라우저에서 열기</button>
     <button type="button" class="ghost" id="pbClose">닫기</button>
   </div>
   <p class="pb-h" id="pbHint">카카오톡·네이버 앱 안에서는 저장이 막히는 경우가 있습니다. 그때는 <b>이미지로 보기</b>를 쓰세요.</p>
@@ -1316,6 +1335,25 @@ function breakPoints(sheet, scale){
   return out;
 }
 var pdfBlobUrl = null, pdfFile = null, pageImages = [];
+
+/* ── 인앱 브라우저 (카카오톡·네이버 등) ── */
+function inAppBrowser(){
+  var ua = navigator.userAgent || "";
+  return /KAKAOTALK|NAVER\(inapp|DaumApps|Instagram|FBAN|FBAV|Line\/|everytimeApp|zumapp|whale\/|kakaostory/i.test(ua);
+}
+function isIOS(){
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function openExternal(){
+  var url = location.href;
+  if(isIOS()){
+    location.href = "x-safari-" + url;                     // 사파리로 전환
+  } else {
+    var bare = url.replace(/^https?:\/\//, "");
+    location.href = "intent://" + bare + "#Intent;scheme=https;package=com.android.chrome;end";
+  }
+}
 function showViewer(){
   if(!pageImages.length) return;
   $("vwPages").textContent = pageImages.length + "쪽";
@@ -1342,6 +1380,10 @@ function deliverPdf(blob, name){
   $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
   $("pbShare").disabled = !pdfBlobUrl;
   $("pbOpen").disabled = !pdfBlobUrl;
+  if(inAppBrowser()){
+    $("pbExt").hidden = false;
+    $("pbHint").innerHTML = "카카오톡 브라우저는 저장이 막혀 있습니다. <b>이미지로 보기</b>로 길게 눌러 저장하거나, <b>브라우저에서 열기</b>로 사파리·크롬에서 다시 시도하세요.";
+  }
   $("pdfbar").hidden = false;
   hideToast();
 }
@@ -1444,6 +1486,10 @@ $("pbShare").addEventListener("click", async function(){
   toast("저장되지 않으면 '새 창에서 열기'를 눌러주세요");
 });
 $("pbView").addEventListener("click", function(){ showViewer(); });
+$("pbExt").addEventListener("click", openExternal);
+$("inappOpen").addEventListener("click", openExternal);
+$("inappClose").addEventListener("click", function(){ $("inappBar").hidden = true; });
+if(inAppBrowser()) $("inappBar").hidden = false;
 $("vwClose").addEventListener("click", hideViewer);
 $("pbOpen").addEventListener("click", function(){
   var before = document.hasFocus();
