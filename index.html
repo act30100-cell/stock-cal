@@ -335,6 +335,32 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 .pb-btns button.ghost{flex:0 0 auto;width:52px;color:var(--faint);font-weight:600}
 .pb-h{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:10px}
 
+/* ── 이미지 뷰어 ──────────────────────── */
+.viewer{position:fixed;inset:0;z-index:90;background:#3A3A38;display:flex;flex-direction:column}
+.viewer[hidden]{display:none}
+.vw-bar{
+  flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:11px 14px;
+  background:var(--ink);color:#fff;border-bottom:3px solid var(--accent);
+}
+.vw-bar .t{font-size:13px;font-weight:700}
+.vw-bar .s{font-size:11px;color:rgba(255,255,255,.55);margin-left:2px}
+.vw-bar button{
+  margin-left:auto;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;
+  padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;
+}
+.vw-body{flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px 12px 30px}
+.vw-body img{
+  display:block;width:100%;max-width:680px;margin:0 auto 14px;background:#fff;
+  box-shadow:0 3px 14px rgba(0,0,0,.3);border-radius:2px;
+}
+.vw-tip{
+  max-width:680px;margin:0 auto 14px;background:rgba(255,255,255,.1);color:#fff;
+  padding:11px 14px;border-radius:8px;font-size:12.5px;line-height:1.7;
+}
+.vw-tip b{color:var(--accent)}
+.pb-btns{flex-wrap:wrap}
+.pb-btns button{flex:1 1 44%;min-width:0}
+
 /* ── report sheet (print & PDF export) ── */
 #printSheet{display:none}
 #printSheet.render{display:block;position:fixed;left:-20000px;top:0;width:794px;background:#fff;color:#000;padding:44px 46px;font-size:10.5pt;z-index:-1}
@@ -618,11 +644,22 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   <div class="pb-t">PDF가 준비되었습니다</div>
   <span class="pb-n" id="pbName"></span>
   <div class="pb-btns">
-    <button type="button" class="key" id="pbShare">공유 · 저장</button>
+    <button type="button" class="key" id="pbView">이미지로 보기</button>
+    <button type="button" id="pbShare">공유 · 저장</button>
     <button type="button" id="pbOpen">새 창에서 열기</button>
     <button type="button" class="ghost" id="pbClose">닫기</button>
   </div>
-  <p class="pb-h" id="pbHint">저장이 안 되면 <b>새 창에서 열기</b> 후 브라우저 공유 메뉴에서 저장하세요.</p>
+  <p class="pb-h" id="pbHint">카카오톡·네이버 앱 안에서는 저장이 막히는 경우가 있습니다. 그때는 <b>이미지로 보기</b>를 쓰세요.</p>
+</div>
+<div class="viewer" id="viewer" hidden>
+  <div class="vw-bar">
+    <span class="t">보고서 이미지</span><span class="s" id="vwPages"></span>
+    <button type="button" id="vwClose">닫기</button>
+  </div>
+  <div class="vw-body">
+    <p class="vw-tip">이미지를 <b>길게 눌러</b> [이미지 저장]을 선택하면 사진첩에 저장됩니다.<br>같은 방법으로 카카오톡에 바로 붙여 보낼 수도 있습니다.</p>
+    <div id="vwBody"></div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1237,8 +1274,12 @@ $("btnClearSc").addEventListener("click", function(){
 });
 
 /* ── PDF 저장 ───────────────────────────── */
-var CDN_H2C = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-var CDN_PDF = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+var CDN_H2C = ["https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+               "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+               "https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"];
+var CDN_PDF = ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+               "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
+               "https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"];
 var toastT = null;
 function toast(msg, kind, hold){
   var el = $("toast");
@@ -1248,15 +1289,22 @@ function toast(msg, kind, hold){
   if(!hold) toastT = setTimeout(function(){ el.className = "toast" + (kind==="err"?" err":""); }, 2600);
 }
 function hideToast(){ clearTimeout(toastT); $("toast").className = "toast"; }
-function loadScript(src){
+function loadOne(src){
   return new Promise(function(res, rej){
     if(document.querySelector('script[data-x="'+src+'"]')) return res();
     var s = document.createElement("script");
     s.src = src; s.async = true; s.setAttribute("data-x", src);
     s.onload = res;
-    s.onerror = function(){ rej(new Error("script")); };
+    s.onerror = function(){ s.remove(); rej(new Error("load fail")); };
     document.head.appendChild(s);
   });
+}
+async function loadScript(list){
+  var srcs = [].concat(list), last = null;
+  for(var i=0;i<srcs.length;i++){
+    try{ await loadOne(srcs[i]); return; }catch(e){ last = e; }
+  }
+  throw last || new Error("load fail");
 }
 function breakPoints(sheet, scale){
   var top = sheet.getBoundingClientRect().top, out = [];
@@ -1267,14 +1315,33 @@ function breakPoints(sheet, scale){
   out.sort(function(a,b){ return a-b; });
   return out;
 }
-var pdfBlobUrl = null, pdfFile = null;
+var pdfBlobUrl = null, pdfFile = null, pageImages = [];
+function showViewer(){
+  if(!pageImages.length) return;
+  $("vwPages").textContent = pageImages.length + "쪽";
+  $("vwBody").innerHTML = pageImages.map(function(src,i){
+    return '<img src="'+src+'" alt="보고서 '+(i+1)+'쪽">';
+  }).join("");
+  $("viewer").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function hideViewer(){
+  $("viewer").hidden = true;
+  $("vwBody").innerHTML = "";
+  document.body.style.overflow = "";
+}
 function deliverPdf(blob, name){
-  if(pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
-  pdfBlobUrl = URL.createObjectURL(blob);
-  try{ pdfFile = new File([blob], name, {type:"application/pdf"}); }catch(e){ pdfFile = null; }
-  $("pbName").textContent = name;
+  if(pdfBlobUrl){ URL.revokeObjectURL(pdfBlobUrl); pdfBlobUrl = null; }
+  pdfFile = null;
+  if(blob){
+    try{ pdfBlobUrl = URL.createObjectURL(blob); }catch(e){ pdfBlobUrl = null; }
+    try{ pdfFile = new File([blob], name, {type:"application/pdf"}); }catch(e){ pdfFile = null; }
+  }
+  $("pbName").textContent = pdfBlobUrl ? name : (pageImages.length + "쪽 이미지");
   var canShare = !!(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]}));
   $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
+  $("pbShare").disabled = !pdfBlobUrl;
+  $("pbOpen").disabled = !pdfBlobUrl;
   $("pdfbar").hidden = false;
   hideToast();
 }
@@ -1300,22 +1367,26 @@ function wantsFile(){
 }
 async function savePdfFile(){
   var sheet = $("printSheet");
-  toast("PDF를 만드는 중…", "", true);
+  toast("보고서를 만드는 중…", "", true);
   try{
     await loadScript(CDN_H2C);
-    await loadScript(CDN_PDF);
-    if(document.fonts && document.fonts.ready) { try{ await document.fonts.ready; }catch(e){} }
+  }catch(e){
+    toast("보고서 생성 도구를 불러오지 못했습니다. 네트워크를 확인해 주세요.", "err", true);
+    setTimeout(hideToast, 6000);
+    return;
+  }
+  try{
+    if(document.fonts && document.fonts.ready){ try{ await document.fonts.ready; }catch(e){} }
     sheet.classList.add("render");
     await new Promise(function(r){ setTimeout(r, 60); });
     var canvas = await html2canvas(sheet, {scale:2, backgroundColor:"#FFFFFF", useCORS:true, logging:false});
     var stops = breakPoints(sheet, canvas.width / sheet.offsetWidth);
     sheet.classList.remove("render");
 
-    var JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-    var pdf = new JsPDF({unit:"mm", format:"a4", orientation:"portrait"});
+    // 페이지 단위로 잘라 이미지 배열을 먼저 만든다 (PDF 실패와 무관하게 항상 확보)
     var M = 10, PW = 210, PH = 297, iw = PW - M*2, avail = PH - M*2;
     var sliceH = Math.floor(canvas.width * avail / iw);
-    var start = 0, first = true;
+    var slices = [], start = 0;
     while(start < canvas.height - 2){
       var end = Math.min(start + sliceH, canvas.height);
       if(end < canvas.height){
@@ -1331,16 +1402,28 @@ async function savePdfFile(){
       var cx = c2.getContext("2d");
       cx.fillStyle = "#FFFFFF"; cx.fillRect(0,0,c2.width,c2.height);
       cx.drawImage(canvas, 0, -start);
-      if(!first) pdf.addPage();
-      pdf.addImage(c2.toDataURL("image/jpeg", 0.92), "JPEG", M, M, iw, hpx*iw/canvas.width);
-      first = false;
+      slices.push({url:c2.toDataURL("image/jpeg", 0.92), h:hpx});
       start = end;
     }
-    deliverPdf(pdf.output("blob"), pdfName());
+    pageImages = slices.map(function(s){ return s.url; });
+
+    var blob = null;
+    try{
+      await loadScript(CDN_PDF);
+      var JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+      var pdf = new JsPDF({unit:"mm", format:"a4", orientation:"portrait"});
+      slices.forEach(function(s,i){
+        if(i) pdf.addPage();
+        pdf.addImage(s.url, "JPEG", M, M, iw, s.h*iw/canvas.width);
+      });
+      blob = pdf.output("blob");
+    }catch(e){ blob = null; }
+
+    deliverPdf(blob, pdfName());
   }catch(e){
     sheet.classList.remove("render");
-    toast("PDF를 만들지 못했습니다. 인쇄 화면으로 엽니다.", "err");
-    try{ window.print(); }catch(e2){}
+    toast("보고서를 만들지 못했습니다 (" + ((e && e.message) || "알 수 없는 오류") + ")", "err", true);
+    setTimeout(hideToast, 6000);
   }
 }
 function resetPdfBar(){
@@ -1360,7 +1443,15 @@ $("pbShare").addEventListener("click", async function(){
   downloadPdf();
   toast("저장되지 않으면 '새 창에서 열기'를 눌러주세요");
 });
-$("pbOpen").addEventListener("click", function(){ openPdf(); });
+$("pbView").addEventListener("click", function(){ showViewer(); });
+$("vwClose").addEventListener("click", hideViewer);
+$("pbOpen").addEventListener("click", function(){
+  var before = document.hasFocus();
+  openPdf();
+  setTimeout(function(){
+    if(document.hasFocus() && before) toast("새 창이 열리지 않았습니다. '이미지로 보기'를 눌러주세요", "err");
+  }, 900);
+});
 $("pbClose").addEventListener("click", function(){ $("pdfbar").hidden = true; });
 
 $("btnPrint").addEventListener("click", function(){
