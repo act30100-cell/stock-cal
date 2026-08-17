@@ -9,11 +9,11 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="주식평가" />
+<meta name="apple-mobile-web-app-title" content="주식가치평가 계산기" />
 <meta name="format-detection" content="telephone=no" />
 <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACe0lEQVR42u3cQW7iMBSA4aZiySXIFckxOCOXIAdgh7JwXSdYsuP3/bvpaECiH++ZdpLpdb/9SKl+vQSCQ3AIDsEhOASH4BAcgkNwSHAIDsEhOASH4BAcgkNwCA4JDsEhOASH4BAcgkNwCA7BIcEhOLS/i5egSdfHc/vHdZlNDiVkJL8CBxld+5jcMK6VjM8qSX7R5IjbFkGfBw445NNKl4eM8r3jzBFORvLMkV9AcASdGR36cOboXUbDT7lwCA7BMd5OgYMMOMg4VX4IhoXJQQYcZFgrWJgc55SxLnO3v4WHo7EMawWLwWXAYWBYK2SYHFYJHAaGtUIGHGRYK1jAMdx5M6wMa4UMOMiwVr6R8dclRjFZmBxpAae4xNnkaLlHMqPF5CAj8W/H/q89oXFkvrXbv8oLCOXjQsbe7/r18QyyYhxIBYfgcFBw5sDC5CDD5MDC5CDD5MDC5DiRjOC/Pws9ObAwOcgwObAwOcgwObAwOcgwObCAoy8H6zKTAUd6Qrgy0Znjn91BRujJUXKJERbRP61kLisiw0dZq8Ra2XnOCH79WbjJkZRRcolRwOvPYk2OwkvQ8o9ghAw4OWq9780PB1LBITgEh+AQHIJDgkNwCA7BITgEh+AQHIJDcAgOL4HgEByCQ3AIDsEhOASH4BAcEhyCQ3AIDsEhOASH4BAcgkOCQ/3iqHVz2cLHqXgv226f0eRQDBzfvyF2PUKV91/nz1i36XW/teV57P7Uh1+yw7fDPtEzjoND1orgEByCQ3BIcAgOwSE4BIfgEByCQ3AIDgkOwSE4BIfgEByCQ3AIDsEhwSE4BIfgEByCQ3AIDsEhOASHBIfgUKXeKGbpgW0BK3oAAAAASUVORK5CYII=" />
 <link rel="icon" type="image/png" sizes="512x512" href="data:image/png;base64,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" />
-<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%EB%B9%84%EC%83%81%EC%9E%A5%EC%A3%BC%EC%8B%9D%20%ED%8F%89%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22short_name%22%3A%22%EC%A3%BC%EC%8B%9D%ED%8F%89%EA%B0%80%22%2C%22description%22%3A%22%EC%83%81%EC%A6%9D%EC%84%B8%EB%B2%95%20%EB%B3%B4%EC%B6%A9%EC%A0%81%20%ED%8F%89%EA%B0%80%EB%B0%A9%EB%B2%95%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B9%84%EC%83%81%EC%9E%A5%EC%A3%BC%EC%8B%9D%20%EA%B0%80%EC%B9%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22start_url%22%3A%22.%22%2C%22scope%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22background_color%22%3A%22%23F4F1EE%22%2C%22theme_color%22%3A%22%23F37321%22%2C%22lang%22%3A%22ko%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACe0lEQVR42u3cQW7iMBSA4aZiySXIFckxOCOXIAdgh7JwXSdYsuP3%2FbvpaECiH%2B%2BZdpLpdb%2F9SKl%2BvQSCQ3AIDsEhOASH4BAcgkNwSHAIDsEhOASH4BAcgkNwCA4JDsEhOASH4BAcgkNwCA7BIcEhOLS%2Fi5egSdfHc%2FvHdZlNDiVkJL8CBxld%2B5jcMK6VjM8qSX7R5IjbFkGfBw445NNKl4eM8r3jzBFORvLMkV9AcASdGR36cOboXUbDT7lwCA7BMd5OgYMMOMg4VX4IhoXJQQYcZFgrWJgc55SxLnO3v4WHo7EMawWLwWXAYWBYK2SYHFYJHAaGtUIGHGRYK1jAMdx5M6wMa4UMOMiwVr6R8dclRjFZmBxpAae4xNnkaLlHMqPF5CAj8W%2FH%2Fq89oXFkvrXbv8oLCOXjQsbe7%2Fr18QyyYhxIBYfgcFBw5sDC5CDD5MDC5CDD5MDC5DiRjOC%2FPws9ObAwOcgwObAwOcgwObAwOcgwObCAoy8H6zKTAUd6Qrgy0Znjn91BRujJUXKJERbRP61kLisiw0dZq8Ra2XnOCH79WbjJkZRRcolRwOvPYk2OwkvQ8o9ghAw4OWq9780PB1LBITgEh%2BAQHIJDgkNwCA7BITgEh%2BAQHIJDcAgOL4HgEByCQ3AIDsEhOASH4BAcEhyCQ3AIDsEhOASH4BAcgkOCQ%2F3iqHVz2cLHqXgv226f0eRQDBzfvyF2PUKV91%2Fnz1i36XW%2FteV57P7Uh1%2Byw7fDPtEzjoND1orgEByCQ3BIcAgOwSE4BIfgEByCQ3AIDgkOwSE4BIfgEByCQ3AIDsEhwSE4BIfgEByCQ3AIDsEhOASHBIfgUKXeKGbpgW0BK3oAAAAASUVORK5CYII%3D%22%2C%22sizes%22%3A%22180x180%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAAI2ElEQVR42u3dQXLbuBaGUSnloTYhbVFahtaoTUgLyMBVrlREw4RJgsC95wz75SUOq%2F1%2FAO1Ojs%2Fr%2BQBAPn88AgABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAEAAABAAAAQAgNg%2BPAJgvtP9MfnPX7eLhzOc4%2FN69hSA3%2B2%2BEgzNKyBgtfWv%2FcG4AQARpt9VwA0AsP6uAgIAZF1%2FDRAAAAQASHb8dwkQACDv%2BmtA5%2FyHYECd92%2FvMfFuAEDG9T%2F4jk8BAAIon%2BULQ19ugCuCAADRzv7uAQIAgAAAMAjfBQRJNX4vX%2FjlvDsSACDg7ld9SErQmD8NFEz%2FXG2%2B1UcGmvE1ALD%2BK%2Fwk%2FvQIAQDCrn%2Fhp%2FKnRwzKKyCw%2Fp3yLsgNAEh6lHYPEAAg74BqgAAAIABAsrOzS4AAACAAAAgAMCnYaxNvgQQAAAEAQAAAEAAABACAn%2FgLYSAU3zCDGwBYfxAAsP4wxSsgMP24AQDWHwEArD%2FheQUEph83AMD6IwCA9UcAAOtPTL4GAKYfNwDA%2BiMAgPUnPK%2BAwPTjBgBYfwQAsP6E5xUQmH7cAIAQ6%2F%2B6XTxJBACsP3zLKyAIMv3WHzcAsP7gBgA51t%2F0IwDg4A8VvAIC648bADDO%2Bpt%2BBAAc%2FOGXvAIC648bAND3%2Bpt%2B3ADA%2BoMbACSYfuuPAICDP6zJKyCw%2FrgBAN1Mv%2FVHAMDBH7biFRBYf9wAgF2n3%2FojAODgDy14BQTWHzcAoPn0W3%2FcAMD6gxsA5Fh%2F048AgIM%2F7MMrILD%2BuAEAG6%2B%2F6UcAwMEf9ucVEFh%2F3ACADdbf9CMA4OAPffEKCKw%2FbgCQeNy%2FxtprHwQAch3q1zr1W38G4hUQ1n9N1h83ADD94AYA1h8EAKw%2F9MMrIDD9uAGA47%2F1RwDA%2Blt%2FwvMKiHTet7uqGaYfNwAIsv5Vm279EQDoVPksX5jvOctu%2FREAiHP2n%2F8DrD8CAIAAADAy3wXEkFr%2Bh77lX9GrIQQAYu7%2B%2FA9JCRiOV0AMM%2F0L13%2FrvxJg%2BUcIAgBbHfwLP0%2BDXwIEAPac1MmfrcEvAR3yNQASrX%2BzgT7dH74kgBsAJD1KuwcgAJB3QDUAAQBAACDZ2dklAAEAQAAAEACYFOy1ibdACAAAAgCAAMB%2FvDCBZvxREJh%2BcAMA6w9uAGD6wQ0ArD%2B4AYDpBzcAsP7gBgCmH9wAwPqDGwCYfnADwPpbf3ADwPQDbgBYf8ANANMPuAFg%2FQEBwPoDAsAY07%2FK%2Br9uFw8TBIB0B3%2FrDy35IjCmH9wAwPqDGwCYfnADAOsPbgCYftMPbgBYf%2BsPbgCYftMPbgBYf%2BsPbgCYftMPbgBYf8ANgEzTb%2F1BAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAIIP%2BuQ6O%2FgDAhD%2FLP%2F5v34ttYM%2FIADxp3%2BLI7%2FphyT8hTBB1n9d1h%2FcAEi3%2FqYf3ACw%2FoAbAAnW3%2FSDGwDWH3ADIAHTDwLASMf%2Ff1d7yXXB%2BoMAMPCB%2FfOf1GbA9AMHXwMY6PhfWO2qQbf%2BgBuACwTgBsD42738BwACgLM%2FkIJXQPto%2FM3%2BhV9OG0AACLj7VR%2BSEkA2XgG129kl6%2F%2Fj%2F3d5WhZ%2BhIAAMMbBP8CHCghAlkkt%2FDzrrrYGgADQ3Zi%2Bv6XZ6L2NBkAGvgg8zPo3XufT%2FeHLwuAGQNJDtHsACAAAAkCys7NLAAgAAAIAgAAwKdhrE2%2BBQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQgA68bhe%2FHQ9w39%2BOZ4gAACAAAAiAG2v%2FvxEP0DOM9xsRAHzieYB4hgLgX1w8QM8QAfDp54P3AD1DARMADfBhe4CeofUXAA3wAXuAniFbOj6vZ0%2BhgdP94bPOA%2FQMTb8AyIBPPA%2FQM7T%2BAqAEPuU8QM%2FQ7gsAAC35IjCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACACAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACACAAHgEAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgDAKv4CXWxgm5QF1U0AAAAASUVORK5CYII%3D%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D" />
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%EC%A3%BC%EC%8B%9D%EA%B0%80%EC%B9%98%ED%8F%89%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22short_name%22%3A%22%EC%A3%BC%EC%8B%9D%EA%B0%80%EC%B9%98%ED%8F%89%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22description%22%3A%22%EC%83%81%EC%A6%9D%EC%84%B8%EB%B2%95%20%EB%B3%B4%EC%B6%A9%EC%A0%81%20%ED%8F%89%EA%B0%80%EB%B0%A9%EB%B2%95%EC%97%90%20%EB%94%B0%EB%A5%B8%20%EB%B9%84%EC%83%81%EC%9E%A5%EC%A3%BC%EC%8B%9D%20%EA%B0%80%EC%B9%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22start_url%22%3A%22.%22%2C%22scope%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22background_color%22%3A%22%23F37321%22%2C%22theme_color%22%3A%22%23F37321%22%2C%22lang%22%3A%22ko%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACe0lEQVR42u3cQW7iMBSA4aZiySXIFckxOCOXIAdgh7JwXSdYsuP3%2FbvpaECiH%2B%2BZdpLpdb%2F9SKl%2BvQSCQ3AIDsEhOASH4BAcgkNwSHAIDsEhOASH4BAcgkNwCA4JDsEhOASH4BAcgkNwCA7BIcEhOLS%2Fi5egSdfHc%2FvHdZlNDiVkJL8CBxld%2B5jcMK6VjM8qSX7R5IjbFkGfBw445NNKl4eM8r3jzBFORvLMkV9AcASdGR36cOboXUbDT7lwCA7BMd5OgYMMOMg4VX4IhoXJQQYcZFgrWJgc55SxLnO3v4WHo7EMawWLwWXAYWBYK2SYHFYJHAaGtUIGHGRYK1jAMdx5M6wMa4UMOMiwVr6R8dclRjFZmBxpAae4xNnkaLlHMqPF5CAj8W%2FH%2Fq89oXFkvrXbv8oLCOXjQsbe7%2Fr18QyyYhxIBYfgcFBw5sDC5CDD5MDC5CDD5MDC5DiRjOC%2FPws9ObAwOcgwObAwOcgwObAwOcgwObCAoy8H6zKTAUd6Qrgy0Znjn91BRujJUXKJERbRP61kLisiw0dZq8Ra2XnOCH79WbjJkZRRcolRwOvPYk2OwkvQ8o9ghAw4OWq9780PB1LBITgEh%2BAQHIJDgkNwCA7BITgEh%2BAQHIJDcAgOL4HgEByCQ3AIDsEhOASH4BAcEhyCQ3AIDsEhOASH4BAcgkOCQ%2F3iqHVz2cLHqXgv226f0eRQDBzfvyF2PUKV91%2Fnz1i36XW%2FteV57P7Uh1%2Byw7fDPtEzjoND1orgEByCQ3BIcAgOwSE4BIfgEByCQ3AIDgkOwSE4BIfgEByCQ3AIDsEhwSE4BIfgEByCQ3AIDsEhOASHBIfgUKXeKGbpgW0BK3oAAAAASUVORK5CYII%3D%22%2C%22sizes%22%3A%22180x180%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAAI2ElEQVR42u3dQXLbuBaGUSnloTYhbVFahtaoTUgLyMBVrlREw4RJgsC95wz75SUOq%2F1%2FAO1Ojs%2Fr%2BQBAPn88AgABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAEAAABAAAAQAgNg%2BPAJgvtP9MfnPX7eLhzOc4%2FN69hSA3%2B2%2BEgzNKyBgtfWv%2FcG4AQARpt9VwA0AsP6uAgIAZF1%2FDRAAAAQASHb8dwkQACDv%2BmtA5%2FyHYECd92%2FvMfFuAEDG9T%2F4jk8BAAIon%2BULQ19ugCuCAADRzv7uAQIAgAAAMAjfBQRJNX4vX%2FjlvDsSACDg7ld9SErQmD8NFEz%2FXG2%2B1UcGmvE1ALD%2BK%2Fwk%2FvQIAQDCrn%2Fhp%2FKnRwzKKyCw%2Fp3yLsgNAEh6lHYPEAAg74BqgAAAIABAsrOzS4AAACAAAAgAMCnYaxNvgQQAAAEAQAAAEAAABACAn%2FgLYSAU3zCDGwBYfxAAsP4wxSsgMP24AQDWHwEArD%2FheQUEph83AMD6IwCA9UcAAOtPTL4GAKYfNwDA%2BiMAgPUnPK%2BAwPTjBgBYfwQAsP6E5xUQmH7cAIAQ6%2F%2B6XTxJBACsP3zLKyAIMv3WHzcAsP7gBgA51t%2F0IwDg4A8VvAIC648bADDO%2Bpt%2BBAAc%2FOGXvAIC648bAND3%2Bpt%2B3ADA%2BoMbACSYfuuPAICDP6zJKyCw%2FrgBAN1Mv%2FVHAMDBH7biFRBYf9wAgF2n3%2FojAODgDy14BQTWHzcAoPn0W3%2FcAMD6gxsA5Fh%2F048AgIM%2F7MMrILD%2BuAEAG6%2B%2F6UcAwMEf9ucVEFh%2F3ACADdbf9CMA4OAPffEKCKw%2FbgCQeNy%2FxtprHwQAch3q1zr1W38G4hUQ1n9N1h83ADD94AYA1h8EAKw%2F9MMrIDD9uAGA47%2F1RwDA%2Blt%2FwvMKiHTet7uqGaYfNwAIsv5Vm279EQDoVPksX5jvOctu%2FREAiHP2n%2F8DrD8CAIAAADAy3wXEkFr%2Bh77lX9GrIQQAYu7%2B%2FA9JCRiOV0AMM%2F0L13%2FrvxJg%2BUcIAgBbHfwLP0%2BDXwIEAPac1MmfrcEvAR3yNQASrX%2BzgT7dH74kgBsAJD1KuwcgAJB3QDUAAQBAACDZ2dklAAEAQAAAEACYFOy1ibdACAAAAgCAAMB%2FvDCBZvxREJh%2BcAMA6w9uAGD6wQ0ArD%2B4AYDpBzcAsP7gBgCmH9wAwPqDGwCYfnADwPpbf3ADwPQDbgBYf8ANANMPuAFg%2FQEBwPoDAsAY07%2FK%2Br9uFw8TBIB0B3%2FrDy35IjCmH9wAwPqDGwCYfnADAOsPbgCYftMPbgBYf%2BsPbgCYftMPbgBYf%2BsPbgCYftMPbgBYf8ANgEzTb%2F1BAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAHDwBwQAB39AAIIP%2BuQ6O%2FgDAhD%2FLP%2F5v34ttYM%2FIADxp3%2BLI7%2FphyT8hTBB1n9d1h%2FcAEi3%2FqYf3ACw%2FoAbAAnW3%2FSDGwDWH3ADIAHTDwLASMf%2Ff1d7yXXB%2BoMAMPCB%2FfOf1GbA9AMHXwMY6PhfWO2qQbf%2BgBuACwTgBsD42738BwACgLM%2FkIJXQPto%2FM3%2BhV9OG0AACLj7VR%2BSEkA2XgG129kl6%2F%2Fj%2F3d5WhZ%2BhIAAMMbBP8CHCghAlkkt%2FDzrrrYGgADQ3Zi%2Bv6XZ6L2NBkAGvgg8zPo3XufT%2FeHLwuAGQNJDtHsACAAAAkCys7NLAAgAAAIAgAAwKdhrE2%2BBQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAEAQAAAEAAABAAAAQBAAAAQAAAEAAABAEAAABAAAAQAAAEAQAAAEAAABAAAAQBAAAAQgA68bhe%2FHQ9w39%2BOZ4gAACAAAAiAG2v%2FvxEP0DOM9xsRAHzieYB4hgLgX1w8QM8QAfDp54P3AD1DARMADfBhe4CeofUXAA3wAXuAniFbOj6vZ0%2BhgdP94bPOA%2FQMTb8AyIBPPA%2FQM7T%2BAqAEPuU8QM%2FQ7gsAAC35IjCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACACAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACACAAHgEAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAIAgAAAIAAACAAAAgCAAAAgAAAIAAACAIAAACAAAAgAAAIAgAAAIAAACAAAAgDAKv4CXWxgm5QF1U0AAAAASUVORK5CYII%3D%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D" />
 
 <meta name="description" content="기업진단 리포트를 올리면 순손익·순자산을 읽어와 1주당 평가액과 기업가치를 계산합니다." />
 <style>
@@ -61,6 +61,21 @@ body{
 button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .tnum{font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
+
+/* ── 실행 화면 ────────────────────────── */
+.splash{
+  position:fixed;inset:0;z-index:100;background:var(--hw-orange);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  animation:spIn .25s ease-out;
+}
+.splash[hidden]{display:none}
+.splash.out{animation:spOut .35s ease-in forwards}
+.splash svg{width:112px;height:112px;margin-bottom:18px}
+.sp-name{margin:0;color:#fff;font-size:21px;font-weight:800;letter-spacing:-0.035em}
+.sp-sub{margin:5px 0 0;color:rgba(255,255,255,.8);font-family:var(--mono);font-size:11.5px;letter-spacing:.02em}
+@keyframes spIn{from{opacity:0}to{opacity:1}}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+@media(prefers-reduced-motion:reduce){.splash,.splash.out{animation:none}}
 
 /* ── masthead ─────────────────────────── */
 #topStack{position:sticky;top:0;z-index:40}
@@ -290,7 +305,7 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   .mast-in{padding:10px 14px;gap:9px}
   .mark h1{font-size:17px}
   .mark p{display:none}
-  .mark h1::after{content:"v10";margin-left:7px;padding:1px 5px;border-radius:3px;
+  .mark h1::after{content:"v11";margin-left:7px;padding:1px 5px;border-radius:3px;
     background:var(--sub);border:1px solid var(--line);color:var(--faint);
     font-size:9.5px;font-weight:700;letter-spacing:0;vertical-align:3px;}
   .btn{padding:6px 11px;font-size:12px}
@@ -773,12 +788,30 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 </head>
 <body>
 
+<div class="splash" id="splash" hidden>
+  <svg viewBox="0 0 512 512" aria-hidden="true">
+    <rect width="512" height="512" rx="112" fill="#fff" opacity=".16"/>
+    <g fill="#fff">
+      <rect x="113" y="257" width="69" height="142" rx="15"/>
+      <rect x="221" y="185" width="69" height="214" rx="15"/>
+      <rect x="330" y="113" width="69" height="286" rx="15"/>
+    </g>
+    <polyline points="147,257 256,185 364,113" fill="none" stroke="#fff" stroke-width="14"
+              stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#F37321" stroke="#fff" stroke-width="9">
+      <circle cx="147" cy="257" r="14"/><circle cx="256" cy="185" r="14"/><circle cx="364" cy="113" r="14"/>
+    </g>
+  </svg>
+  <p class="sp-name">주식가치평가 계산기</p>
+  <p class="sp-sub">상증세법 §63 보충적 평가방법</p>
+</div>
+
 <div id="topStack">
 <header class="mast">
   <div class="mast-in">
     <div class="mark">
       <h1>비상장주식 평가<span class="dot"></span></h1>
-      <p>상증세법 §63 · 시행령 §54 보충적 평가방법 <span class="ver">v10</span></p>
+      <p>상증세법 §63 · 시행령 §54 보충적 평가방법 <span class="ver">v11</span></p>
     </div>
     <button class="btn btn-primary" id="btnPrint" type="button">PDF로 저장</button>
   </div>
@@ -1882,7 +1915,7 @@ function printCautions(base, multi){
 
   return '<p class="p-sub"><i>' + (multi ? 6 : 5) + '</i>유의사항</p>'
        + '<ul class="p-caution">' + li.map(function(x){ return "<li>" + x + "</li>"; }).join("") + '</ul>'
-       + '<p class="p-foot">상속세 및 증여세법 제63조 · 같은 법 시행령 제54조 보충적 평가방법 기준 · v10</p>';
+       + '<p class="p-foot">상속세 및 증여세법 제63조 · 같은 법 시행령 제54조 보충적 평가방법 기준 · v11</p>';
 }
 
 /* ── year table ────────────────────────── */
@@ -1992,6 +2025,46 @@ function decideCorpType(){
   return type || "general";
 }
 
+/* 기업명 추출 — 리포트마다 라벨과 배치가 달라 여러 방식을 차례로 시도한다 */
+function cleanCompany(s){
+  if(!s) return "";
+  s = s.replace(/\s+/g, " ").trim();
+  s = s.replace(/^[:：\-·\s]+/, "");
+  // 뒤에 붙어 나오는 다른 항목 라벨을 잘라낸다
+  s = s.split(/\s+(?:설립일자|설립년월|영문기업명|사업자번호|법인\(주민\)번호|법인등록번호|대표자명|대표자|기업형태|기업유형|업종|주소|결산월|종업원수|상시근로자수)/)[0];
+  s = s.replace(/[·:：,]+$/, "").trim();
+  if(s.length > 40) s = s.slice(0, 40).trim();
+  return s;
+}
+function pickCompany(text){
+  var pats = [
+    /기업\s*명\s*[:：]?\s*(.+)/,          // 기업명 ○○○ (같은 줄)
+    /기업체\s*명\s*[:：]?\s*(.+)/,
+    /회사\s*명\s*[:：]?\s*(.+)/,
+    /상\s*호\s*[:：]?\s*(.+)/,
+    /법인\s*명\s*[:：]?\s*(.+)/
+  ];
+  for(var i=0;i<pats.length;i++){
+    var m = text.match(pats[i]);
+    if(m){
+      var v = cleanCompany(m[1]);
+      if(v && !/^\d/.test(v)) return v;
+    }
+  }
+  // 표지에서 상호 형태를 직접 찾는다
+  var head = text.slice(0, 3000);
+  var forms = [
+    /((?:주식회사|㈜|\(주\))\s*[가-힣A-Za-z0-9&·\-]{2,20})/,
+    /([가-힣A-Za-z0-9&·\-]{2,20}\s*(?:주식회사|㈜|\(주\)))/,
+    /([가-힣A-Za-z0-9&·\-]{2,20}\s*(?:유한회사|합자회사|합명회사))/
+  ];
+  for(var j=0;j<forms.length;j++){
+    var f = head.match(forms[j]);
+    if(f) return cleanCompany(f[1]);
+  }
+  return "";
+}
+
 function detectFormat(text){
   if(/KOREA\s*RATING\s*&\s*DATA|CRETOP|기업\s*종합\s*보고서|한국평가데이터/i.test(text)) return "cretop";
   if(/재무경영진단\s*리포트|비상장주식 가치평가|1주당 평가액\(최종\)/.test(text)) return "coreport";
@@ -2001,8 +2074,9 @@ function detectFormat(text){
 /* ── 씨오리포트(재무경영진단) ─────────── */
 function parseCoreport(text, found, missing, need){
   var m;
-  m = text.match(/기업명\s+(.+?)\s+설립일자/);
-  if(m){ S.company = m[1].trim(); setAuto("company", S.company); found.push("기업명"); }
+  var nm = pickCompany(text);
+  if(nm){ S.company = nm; setAuto("company", nm); found.push("기업명"); }
+  else { need.push("company"); missing.push("기업명"); }
 
   m = text.match(/평가기준일\s*([0-9]{4}[.\-][0-9]{1,2}[.\-][0-9]{1,2})/);
   if(m){ S.baseDate = m[1]; $("baseDate").value = m[1]; }
@@ -2054,9 +2128,9 @@ function parseCoreport(text, found, missing, need){
 /* ── 크레탑(기업종합보고서) ───────────── */
 function parseCretop(text, found, missing, need){
   var m;
-  m = text.match(/기업명\s+(\S.*?)\s+영문기업명/);
-  if(!m) m = text.match(/기업명\s*:\s*(\S.+)/);
-  if(m){ S.company = m[1].trim(); setAuto("company", S.company); found.push("기업명"); }
+  var nm = pickCompany(text);
+  if(nm){ S.company = nm; setAuto("company", nm); found.push("기업명"); }
+  else { need.push("company"); missing.push("기업명"); }
 
   // 결산일 3개 (재무제표 표 머리글)
   var yh = text.match(/계정명\s+(\d{4})-(\d{2})-(\d{2})\s+(\d{4})-\d{2}-\d{2}\s+(\d{4})-(\d{2})-(\d{2})/);
@@ -2110,7 +2184,7 @@ function parseReport(text){
   if(fmt === "cretop") parseCretop(text, found, missing, need);
   else parseCoreport(text, found, missing, need);
 
-  if(!S.company) need.push("company");
+  if(!S.company && need.indexOf("company") < 0) need.push("company");
   if(S.netAsset) setAuto("netAsset", num(S.netAsset));
 
   S.netAssetBook = S.netAsset;
@@ -2974,7 +3048,7 @@ function deliverPdf(blob, name){
   $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
   $("pbShare").disabled = !pdfBlobUrl;
   $("pbOpen").disabled = !pdfBlobUrl;
-  if(inAppBrowser()){
+if(inAppBrowser()){
     $("pbExt").hidden = false;
     $("pbHint").innerHTML = "카카오톡 브라우저는 저장이 막혀 있습니다. <b>이미지로 보기</b>로 길게 눌러 저장하거나, <b>브라우저에서 열기</b>로 사파리·크롬에서 다시 시도하세요.";
   }
@@ -3110,6 +3184,30 @@ $("pbView").addEventListener("click", function(){ showViewer(); });
 $("pbExt").addEventListener("click", openExternal);
 $("inappOpen").addEventListener("click", openExternal);
 $("inappClose").addEventListener("click", function(){ $("inappBar").hidden = true; });
+/* 홈 화면 앱으로 실행했을 때만 실행 화면을 보여준다 */
+(function(){
+  var standalone = false;
+  try{
+    standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches)
+              || window.navigator.standalone === true;
+  }catch(e){}
+  if(!standalone) return;
+  var el = $("splash");
+  el.hidden = false;
+  var done = false;
+  var hide = function(){
+    if(done) return;
+    done = true;
+    el.classList.add("out");
+    setTimeout(function(){ el.hidden = true; }, 400);
+  };
+  var start = Date.now();
+  var ready = function(){ setTimeout(hide, Math.max(0, 900 - (Date.now()-start))); };
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(ready, ready);
+  else ready();
+  setTimeout(hide, 2500);   // 안전장치
+})();
+
 if(inAppBrowser()){
   $("inappBar").hidden = false;
   $("dropWarn").hidden = false;
