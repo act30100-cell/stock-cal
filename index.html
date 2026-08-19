@@ -399,12 +399,16 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 }
 .nextbtn.ghost{background:var(--paper);color:var(--ink)}
 .nextbtn:active{opacity:.85}
-.resetline{margin-top:16px;text-align:center}
+.resetline{margin-top:18px;text-align:center}
 .resetline button{
-  border:0;background:transparent;color:var(--faint);font-size:12.5px;font-weight:600;
-  cursor:pointer;padding:8px 12px;border-radius:6px;text-decoration:underline;text-underline-offset:3px;
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--hw-tint-2);background:var(--hw-tint);color:var(--accent-deep);
+  font-size:13px;font-weight:700;cursor:pointer;padding:10px 20px;border-radius:999px;transition:.14s;
 }
-.resetline button:hover{color:var(--accent-deep)}
+.resetline button::before{content:"↺";font-size:14px;line-height:1;font-weight:700}
+.resetline button:hover{background:var(--hw-tint-2);border-color:var(--accent)}
+.resetline button:active{transform:translateY(1px)}
+.resetline button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* ── 첫 사용 안내 ─────────────────────── */
 .guide{
@@ -544,6 +548,16 @@ table.cmp-t thead th{border-bottom:1px solid var(--line-2);padding-bottom:9px;ve
   text-overflow:ellipsis;
 }
 .sc-name:focus{outline:none;border-bottom-color:var(--accent);border-bottom-style:solid}
+.sc-hd{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+.sc-mv{display:flex;justify-content:flex-end;gap:4px;margin-top:6px}
+.sc-mv button{
+  width:28px;height:22px;padding:0;line-height:1;cursor:pointer;
+  border:1px solid var(--line-2);background:var(--paper);color:var(--muted);
+  border-radius:6px;font-size:10px;transition:.14s;
+}
+.sc-mv button:hover:not(:disabled){border-color:var(--accent);color:var(--accent-deep);background:var(--hw-tint)}
+.sc-mv button:disabled{opacity:.28;cursor:not-allowed}
+.sc-mv button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .sc-del{
   border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:14px;
   padding:6px;margin:-6px -6px -6px 0;line-height:1;border-radius:6px;
@@ -1181,7 +1195,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
           <button class="sbtn key" id="btnSave" type="button">현재 값 담기</button>
         </div>
       </div>
-      <p class="cmp-auto" id="cmpAuto" hidden>리포트 기준으로 <b>기준(장부가) · 부동산 비중 50% · 평가 하한 적용 · 부동산 비중 80%</b> 시나리오를 자동으로 담았습니다. 직접 담으면 이 세트는 지워집니다.</p>
+      <p class="cmp-auto" id="cmpAuto" hidden>리포트 기준으로 <b>기준(장부가) · 부동산 비중 50% · 평가 하한 적용 · 부동산 비중 80%</b> 시나리오를 자동으로 담았습니다. 여기에 직접 담은 안을 더할 수 있습니다.</p>
       <div id="cmpEmpty" class="cmp-empty">
         <b>담긴 시나리오가 없습니다</b>
         리포트를 올리면 기본 시나리오가 자동으로 담깁니다. <b>기본 시나리오 담기</b>를 눌러 직접 만들 수도 있습니다.<br>
@@ -1443,7 +1457,8 @@ function buildStandardScenarios(force){
   scNote = "";
   if(!S.shares){ scNote = "발행주식수가 없어 시나리오를 만들 수 없습니다."; return false; }
   if(!S.netAsset){ scNote = "순자산가액이 없어 시나리오를 만들 수 없습니다."; return false; }
-  if(S.scenarios.length && !S.scAuto && !force) return false;   // 사용자가 담아둔 것은 건드리지 않는다
+  /* 사용자가 직접 담아둔 것이 있으면 자동으로 건드리지 않는다 */
+  if(!force && S.scenarios.some(function(s){ return !s.auto; })) return false;
 
   var R = otherAssets();
   var list = [{v: S.realEstate, name: "기준(장부가)"}];
@@ -1470,15 +1485,28 @@ function buildStandardScenarios(force){
     list = list.concat(cand);
   }
 
-  S.scenarios = list.slice(0, MAX_SC).map(function(o){ return scenarioAt(o.v, o.name); });
-  S.scAuto = true;
+  /* 직접 담아둔 안은 뒤에 그대로 남긴다 */
+  var manual = S.scenarios.filter(function(s){ return !s.auto; });
+  var auto = list.map(function(o){
+    var s = scenarioAt(o.v, o.name); s.auto = true; return s;
+  });
+  S.scenarios = auto.concat(manual).slice(0, MAX_SC);
+  S.scAuto = !manual.length;
   return true;
 }
 
 function saveScenario(){
-  if(S.scAuto){ S.scenarios = []; S.scAuto = false; }   // 자동 세트 위에 덮어쓰지 않는다
-  if(S.scenarios.length>=MAX_SC) return;
-  S.scenarios.push(snapshot());
+  if(S.scenarios.length>=MAX_SC) return false;
+  S.scenarios.push(snapshot());   // 자동으로 담긴 기본 세트는 그대로 두고 뒤에 덧붙인다
+  S.scAuto = false;               // 직접 담은 안이 섞였으므로 '자동' 표시는 내린다
+  renderCompare(); render();
+  return true;
+}
+/* 시나리오 순서를 좌우로 옮긴다 (첫 칸이 비교 기준) */
+function moveScenario(i, dir){
+  var a = S.scenarios, j = i + dir;
+  if(!a[i] || j < 0 || j >= a.length) return;
+  var t = a[i]; a[i] = a[j]; a[j] = t;
   renderCompare(); render();
 }
 function cmpModel(){
@@ -1526,7 +1554,7 @@ function renderCompare(){
   if(!autoBox.hidden){
     autoBox.innerHTML = scNote
       ? "<b>기준(장부가)</b>만 자동으로 담았습니다. " + escapeHtml(scNote)
-      : "리포트 기준으로 <b>기준(장부가) · 부동산 비중 50% · 평가 하한 적용 · 부동산 비중 80%</b> 시나리오를 자동으로 담았습니다. 직접 담으면 이 세트는 지워집니다.";
+      : "리포트 기준으로 <b>기준(장부가) · 부동산 비중 50% · 평가 하한 적용 · 부동산 비중 80%</b> 시나리오를 자동으로 담았습니다. 여기에 직접 담은 안을 더할 수 있습니다.";
   }
   $("cmpEmpty").hidden = has;
   $("cmpScroll").hidden = !has;
@@ -1537,8 +1565,14 @@ function renderCompare(){
   var head = "<tr><th class='rh'>구분</th>";
   sc.forEach(function(s,i){
     var re = s.reValue || s.realEstate;
-    head += "<th><input class='sc-name' data-i='"+i+"' value='"+s.name.replace(/'/g,"&#39;")+"' aria-label='시나리오 이름'>"
-          + "<button class='sc-del' data-d='"+i+"' type='button' title='삭제'>✕</button>"
+    head += "<th><span class='sc-hd'>"
+          + "<input class='sc-name' data-i='"+i+"' value='"+s.name.replace(/'/g,"&#39;")+"' aria-label='시나리오 이름'>"
+          + "<button class='sc-del' data-d='"+i+"' type='button' title='삭제'>✕</button></span>"
+          + "<span class='sc-mv'>"
+          + "<button data-i='"+i+"' data-mv='-1' type='button' title='왼쪽으로 옮기기' aria-label='왼쪽으로 옮기기'"
+          + (i===0 ? " disabled" : "") + ">◀</button>"
+          + "<button data-i='"+i+"' data-mv='1' type='button' title='오른쪽으로 옮기기' aria-label='오른쪽으로 옮기기'"
+          + (i===sc.length-1 ? " disabled" : "") + ">▶</button></span>"
           + (re ? "<span class='sc-re'>감정평가 <b>"+eok(re)+"억</b></span>" : "")
           + "</th>";
   });
@@ -1565,6 +1599,11 @@ function renderCompare(){
     el.addEventListener("input", function(){
       S.scenarios[+el.dataset.i].name = el.value;
       drawChart(); buildPrint();
+    });
+  });
+  $("cmpHead").querySelectorAll(".sc-mv button").forEach(function(el){
+    el.addEventListener("click", function(){
+      moveScenario(+el.dataset.i, +el.dataset.mv);
     });
   });
   $("cmpHead").querySelectorAll(".sc-del").forEach(function(el){
