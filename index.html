@@ -122,6 +122,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
   flex:1 1 auto;display:flex;overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;scroll-behavior:smooth;
   -webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;
+  transition:height .22s ease;
 }
 .intro-track::-webkit-scrollbar{display:none}
 .intro-card{
@@ -129,6 +130,7 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
   overflow-y:auto;padding:22px 26px 18px;
   display:flex;flex-direction:column;justify-content:center;justify-content:safe center;
 }
+.ic-in{width:100%}
 .ic-step{
   display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
   font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent-deep);
@@ -206,21 +208,23 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
 @media(min-width:981px){
   .intro{padding:24px}
   .intro-box{
-    width:min(980px,94vw);height:min(880px,92vh);
+    width:min(980px,94vw);height:auto;max-height:95vh;
     border-radius:20px;box-shadow:0 26px 80px rgba(0,0,0,.32);
   }
+  .intro-track{min-height:0}
   .intro-top{padding:20px 34px 17px}
   .intro-top .bar{width:5px;height:21px}
   .it-t{font-size:19px}
   .intro-x{width:36px;height:36px;font-size:15px}
-  .intro-card{padding:24px 54px 14px}
-  .intro-card h3{font-size:26px}
-  .ic-lead{font-size:15px;margin-top:10px}
-  .ic-list{margin-top:19px;gap:13px}
-  .ic-list li{padding:15px 20px;font-size:14.5px;gap:14px}
-  .ic-list em{width:24px;height:24px;font-size:12.5px}
+  .intro-card{padding:40px 54px 34px}
+  .intro-card h3{font-size:28px;margin-top:18px}
+  .ic-lead{font-size:15.5px;margin-top:14px;line-height:1.8}
+  .ic-list{margin-top:30px;gap:18px}
+  .ic-list li{padding:20px 22px;font-size:15px;line-height:1.8;gap:15px}
+  .ic-list em{width:25px;height:25px;font-size:13px;margin-top:2px}
+  .ic-list .t{margin-bottom:5px}
   .ic-step{font-size:12.5px;padding:6px 13px}
-  .ic-note{margin-top:19px;padding:14px 18px;font-size:13.5px}
+  .ic-note{margin-top:26px;padding:18px 22px;font-size:14px;line-height:1.8}
   .intro-foot{padding:14px 30px 18px;gap:13px}
   .intro-arrow{width:42px;height:42px;font-size:13px}
   .intro-go{padding:15px 20px;font-size:16px}
@@ -245,9 +249,41 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit}
   .intro-card{padding-left:22px;padding-right:22px}
 }
 /* 세로가 짧은 PC 창은 화면을 더 채워 쓴다 */
+/* 세로가 넉넉하지 않은 PC 창 */
+@media(min-width:981px) and (max-height:1040px){
+  .intro-card{padding:30px 50px 26px}
+  .intro-card h3{font-size:26px;margin-top:15px}
+  .ic-lead{font-size:15px;margin-top:11px;line-height:1.75}
+  .ic-list{margin-top:22px;gap:14px}
+  .ic-list li{padding:16px 20px;font-size:14.5px;line-height:1.72}
+  .ic-note{margin-top:20px;padding:15px 20px;font-size:13.5px}
+  .intro-foot{padding:13px 30px 16px;gap:11px}
+  .intro-arrow{width:38px;height:38px}
+  .intro-go{padding:13px 18px;font-size:15px}
+}
 @media(min-width:981px) and (max-height:840px){
-  .intro-box{height:95vh}
-  .intro-card{padding-left:44px;padding-right:44px}
+  .intro-card{padding:22px 44px 18px}
+  .intro-card h3{font-size:23px;margin-top:12px}
+  .ic-step{font-size:11.5px;padding:5px 11px}
+  .ic-lead{font-size:13.5px;margin-top:9px;line-height:1.7}
+  .ic-list{margin-top:17px;gap:11px}
+  .ic-list li{padding:13px 18px;font-size:13.5px;line-height:1.62}
+  .ic-list .t{margin-bottom:3px}
+  .ic-note{margin-top:15px;padding:13px 16px;font-size:12.5px;line-height:1.7}
+  .intro-foot{padding:11px 28px 14px;gap:9px}
+  .intro-arrow{width:35px;height:35px}
+  .intro-go{padding:12px 16px;font-size:14.5px}
+}
+@media(min-width:981px) and (max-height:760px){
+  .intro-card{padding:18px 44px 14px}
+  .intro-card h3{font-size:21px;margin-top:10px}
+  .ic-lead{font-size:13px;margin-top:8px;line-height:1.65}
+  .ic-list{margin-top:14px;gap:9px}
+  .ic-list li{padding:11px 16px;font-size:13px;line-height:1.58}
+  .ic-note{margin-top:13px;padding:11px 14px;font-size:12px}
+  .intro-foot{padding:10px 28px 12px;gap:8px}
+  .intro-arrow{width:33px;height:33px}
+  .intro-go{padding:11px 16px;font-size:14px}
 }
 /* 아주 짧은 화면(구형 휴대전화 등) */
 @media(max-height:680px){
@@ -1096,10 +1132,10 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <h3>무엇을 할 수 있나</h3>
         <p class="ic-lead">숫자를 옮겨 적는 시간을 줄이고,<br>비교와 설명에 집중할 수 있게 만들었습니다.</p>
         <ul class="ic-list">
-          <li><em>1</em><span><b class="t">진단 리포트 자동 인식</b>재무경영진단&nbsp;· 크레탑 보고서에서 주식수&nbsp;· 순자산&nbsp;· 3개년 순손익을 읽어옵니다</span></li>
-          <li><em>2</em><span><b class="t">부동산 감정평가 시뮬레이션</b>평가액을 올리면 순자산&nbsp;· 부동산 비중&nbsp;· 법인 유형이 함께 움직입니다</span></li>
-          <li><em>3</em><span><b class="t">시나리오 비교</b>최대 6개를 표와 그래프로 나란히 놓고 봅니다</span></li>
-          <li><em>4</em><span><b class="t">PDF 보고서</b>평가 근거와 해설까지 담아 A4로 저장합니다</span></li>
+          <li><em>1</em><span><b class="t">진단 리포트 자동 인식</b>주식수&nbsp;· 순자산&nbsp;· 3개년 순손익을 읽어옵니다</span></li>
+          <li><em>2</em><span><b class="t">부동산 감정평가 시뮬레이션</b>순자산&nbsp;· 부동산 비중&nbsp;· 법인 유형이 함께 움직입니다</span></li>
+          <li><em>3</em><span><b class="t">시나리오 비교</b>최대 6개를 표와 그래프로 비교합니다</span></li>
+          <li><em>4</em><span><b class="t">PDF 보고서</b>근거와 해설까지 담아 A4로 저장합니다</span></li>
         </ul>
       </article>
 
@@ -3713,9 +3749,23 @@ function introSync(i){
   });
   $("introGo").textContent = (i >= n - 1) ? "계산기 시작하기" : "계산기 이용하기";
 }
+/* PC : 창 높이를 지금 보이는 카드에 맞춰 위아래 빈 공간을 없앤다 */
+function introFit(){
+  var t = $("introTrack"), c = introCards()[introIdx];
+  if(!c) return;
+  if(window.innerWidth < 981){ t.style.height = ""; return; }
+  var inner = c.querySelector(".ic-in");
+  if(!inner) return;
+  var cs = getComputedStyle(c);
+  var need = inner.offsetHeight + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+  var top = document.querySelector(".intro-top"), foot = document.querySelector(".intro-foot");
+  var room = Math.round(window.innerHeight * 0.95) - (top ? top.offsetHeight : 0) - (foot ? foot.offsetHeight : 0) - 8;
+  t.style.height = Math.max(200, Math.min(Math.ceil(need), room)) + "px";
+}
 function introTo(i, jump){
   var t = $("introTrack"), n = introCards().length;
   introIdx = Math.max(0, Math.min(n - 1, i));
+  introFit();
   if(jump){
     t.style.scrollBehavior = "auto";
     t.scrollLeft = introIdx * t.clientWidth;
@@ -3754,6 +3804,12 @@ function maybeOpenIntro(){
   openIntro();
 }
 (function(){
+  introCards().forEach(function(c){
+    var w = document.createElement("div");
+    w.className = "ic-in";
+    while(c.firstChild) w.appendChild(c.firstChild);
+    c.appendChild(w);
+  });
   var n = introCards().length, h = "";
   for(var i=0;i<n;i++) h += '<button type="button" data-k="'+i+'" aria-label="'+(i+1)+'번째 안내"></button>';
   $("introDots").innerHTML = h;
@@ -3761,6 +3817,7 @@ function maybeOpenIntro(){
     d.addEventListener("click", function(){ introTo(+d.dataset.k); });
   });
   introSync(0);
+  introFit();
 
   $("introPrev").addEventListener("click", function(){ introTo(introIdx - 1); });
   $("introNext").addEventListener("click", function(){ introTo(introIdx + 1); });
@@ -3783,10 +3840,11 @@ function maybeOpenIntro(){
       var i = Math.round(t.scrollLeft / (t.clientWidth || 1));
       introIdx = Math.max(0, Math.min(introCards().length - 1, i));
       introSync(introIdx);
+      introFit();
     }, 70);
   }, {passive:true});
   window.addEventListener("resize", function(){
-    if(!$("intro").hidden) introTo(introIdx, true);
+    if(!$("intro").hidden){ introFit(); introTo(introIdx, true); }
   });
   document.addEventListener("keydown", function(e){
     if($("intro").hidden) return;
