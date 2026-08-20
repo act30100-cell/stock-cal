@@ -531,7 +531,7 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
   .mast-in{padding:10px 14px;gap:9px}
   .mark h1{font-size:17px}
   .mark p{display:none}
-  .mark h1::after{content:"v11";margin-left:7px;padding:1px 5px;border-radius:3px;
+  .mark h1::after{content:"v12";margin-left:7px;padding:1px 5px;border-radius:3px;
     background:var(--sub);border:1px solid var(--line);color:var(--faint);
     font-size:9.5px;font-weight:700;letter-spacing:0;vertical-align:3px;}
   .btn{padding:6px 11px;font-size:12px}
@@ -1177,7 +1177,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   <div class="mast-in">
     <div class="mark">
       <h1>비상장주식 평가<span class="dot"></span></h1>
-      <p>상증세법 §63 · 시행령 §54 보충적 평가방법 <span class="ver">v11</span></p>
+      <p>상증세법 §63 · 시행령 §54 보충적 평가방법 <span class="ver">v12</span></p>
     </div>
     <button class="btn btn-help" id="btnHelp" type="button">사용방법</button>
     <button class="btn btn-primary" id="btnPrint" type="button">저장하기</button>
@@ -2353,7 +2353,7 @@ function printCautions(base, multi){
 
   return '<p class="p-sub"><i>' + (multi ? 6 : 5) + '</i>유의사항</p>'
        + '<ul class="p-caution">' + li.map(function(x){ return "<li>" + x + "</li>"; }).join("") + '</ul>'
-       + '<p class="p-foot">상속세 및 증여세법 제63조 · 같은 법 시행령 제54조 보충적 평가방법 기준 · v11</p>';
+       + '<p class="p-foot">상속세 및 증여세법 제63조 · 같은 법 시행령 제54조 보충적 평가방법 기준 · v12</p>';
 }
 
 /* ── year table ────────────────────────── */
