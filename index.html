@@ -850,24 +850,6 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 .toast.err{background:#9E2F2A}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 
-/* ── PDF 전달 시트 ────────────────────── */
-.pdfbar{
-  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;
-  width:min(420px,calc(100vw - 24px));background:var(--paper);border:1px solid var(--line-2);
-  border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.20);padding:15px 16px 14px;
-}
-.pdfbar[hidden]{display:none}
-.pb-t{font-family:var(--serif);font-size:14.5px;font-weight:800;margin-bottom:3px;letter-spacing:-0.03em}
-.pb-n{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-bottom:11px;word-break:break-all}
-.pb-btns{display:flex;gap:7px}
-.pb-btns button{
-  flex:1 1 0;padding:11px 6px;border-radius:8px;border:1px solid var(--line-2);
-  background:var(--paper);font-size:13px;font-weight:700;cursor:pointer;
-}
-.pb-btns button.key{background:var(--accent);border-color:var(--accent);color:#fff}
-.pb-btns button.ghost{flex:0 0 auto;width:52px;color:var(--faint);font-weight:600}
-.pb-h{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:10px}
-
 /* ── 인앱 브라우저 안내 ──────────────── */
 .inapp{background:#FBF5E7;border-bottom:1px solid #EBD9A8;padding:11px 16px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .inapp[hidden]{display:none}
@@ -879,32 +861,6 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
 }
 .inapp button.x{border:0;background:transparent;color:#A9925F;padding:7px 4px;font-weight:600}
-
-/* ── 이미지 뷰어 ──────────────────────── */
-.viewer{position:fixed;inset:0;z-index:90;background:#3A3A38;display:flex;flex-direction:column}
-.viewer[hidden]{display:none}
-.vw-bar{
-  flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:11px 14px;
-  background:var(--ink);color:#fff;border-bottom:3px solid var(--accent);
-}
-.vw-bar .t{font-size:13px;font-weight:700}
-.vw-bar .s{font-size:11px;color:rgba(255,255,255,.55);margin-left:2px}
-.vw-bar button{
-  margin-left:auto;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;
-  padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;
-}
-.vw-body{flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px 12px 30px}
-.vw-body img{
-  display:block;width:100%;max-width:620px;margin:0 auto 16px;background:#fff;
-  box-shadow:0 4px 18px rgba(0,0,0,.35);border-radius:2px;
-}
-.vw-tip{
-  max-width:680px;margin:0 auto 14px;background:rgba(255,255,255,.1);color:#fff;
-  padding:11px 14px;border-radius:8px;font-size:12.5px;line-height:1.7;
-}
-.vw-tip b{color:var(--accent)}
-.pb-btns{flex-wrap:wrap}
-.pb-btns button{flex:1 1 44%;min-width:0}
 
 /* ── report sheet (print & PDF export) · 한화생명 발표자료 템플릿 적용 ── */
 #printSheet{display:none}
@@ -1097,7 +1053,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
   @page{size:A4 portrait;margin:12mm 14mm 11mm}
   html,body{background:#fff;color:#000;margin:0;padding:0}
   body{font-size:10pt}
-  #topStack,.wrap,.toast,.swipehint,.viewer,.pdfbar,.p-cap{display:none !important}
+  #topStack,.wrap,.toast,.swipehint,.savemenu,.p-cap{display:none !important}
   #printSheet{display:block;padding:0;margin:0;width:auto;font-size:10pt}
   /* 꼬리말은 쪽마다 같은 자리에 고정 — 자리는 tfoot 이 확보한다 */
   #printSheet .p-fixfoot{display:block;position:fixed;left:0;right:0;bottom:0}
@@ -1554,29 +1510,6 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
     <button type="button" class="sm-x" id="smClose">닫기</button>
   </div>
 </div>
-<div class="pdfbar" id="pdfbar" hidden>
-  <div class="pb-t">PDF가 준비되었습니다</div>
-  <span class="pb-n" id="pbName"></span>
-  <div class="pb-btns">
-    <button type="button" class="key" id="pbView">이미지로 보기</button>
-    <button type="button" id="pbShare">공유 · 저장</button>
-    <button type="button" id="pbOpen">새 창에서 열기</button>
-    <button type="button" id="pbExt" hidden>브라우저에서 열기</button>
-    <button type="button" class="ghost" id="pbClose">닫기</button>
-  </div>
-  <p class="pb-h" id="pbHint">카카오톡·네이버 앱 안에서는 저장이 막히는 경우가 있습니다. 그때는 <b>이미지로 보기</b>를 쓰세요.</p>
-</div>
-<div class="viewer" id="viewer" hidden>
-  <div class="vw-bar">
-    <span class="t">보고서 이미지</span><span class="s" id="vwPages"></span>
-    <button type="button" id="vwClose">닫기</button>
-  </div>
-  <div class="vw-body">
-    <p class="vw-tip">이미지를 <b>길게 눌러</b> [이미지 저장]을 선택하면 사진첩에 저장됩니다.<br>같은 방법으로 카카오톡에 바로 붙여 보낼 수도 있습니다.</p>
-    <div id="vwBody"></div>
-  </div>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function(){
@@ -3263,8 +3196,8 @@ document.addEventListener("keydown", function(e){
   // 화면이 좁아 탭이 보일 때만 (넓은 화면은 세 영역이 한꺼번에 보임)
   if(!onTab && !isNarrow()) return;
   if(!document.querySelector(".tabs") || getComputedStyle(document.querySelector(".tabs")).display === "none") return;
-  // 뷰어·PDF 시트·사용 안내가 열려 있으면 건드리지 않는다
-  if(!$("viewer").hidden || !$("pdfbar").hidden || !$("intro").hidden) return;
+  // 사용 안내·저장 선택이 열려 있으면 건드리지 않는다
+  if(!$("intro").hidden || !$("saveMenu").hidden) return;
 
   if(movePane(e.key === "ArrowRight" ? 1 : -1)) e.preventDefault();
 });
@@ -3456,7 +3389,7 @@ function breakPoints(sheet, scale){
   out.sort(function(a,b){ return a.y - b.y; });
   return out;
 }
-var pdfBlobUrl = null, pdfFile = null, pageImages = [];
+var pageImages = [];
 /* 한화생명 CI (템플릿 EMF → PNG) */
 var HW_CI = "data:image/png;base64,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";
 
@@ -3575,60 +3508,20 @@ function openExternal(){
     location.href = "intent://" + bare + "#Intent;scheme=https;package=com.android.chrome;end";
   }
 }
-function showViewer(){
-  if(!pageImages.length) return;
-  $("vwPages").textContent = pageImages.length + "쪽";
-  $("vwBody").innerHTML = pageImages.map(function(src,i){
-    return '<img src="'+src+'" alt="보고서 '+(i+1)+'쪽">';
-  }).join("");
-  $("viewer").hidden = false;
-  document.body.style.overflow = "hidden";
-}
-function hideViewer(){
-  $("viewer").hidden = true;
-  $("vwBody").innerHTML = "";
-  document.body.style.overflow = "";
-}
-function deliverPdf(blob, name){
-  if(pdfBlobUrl){ URL.revokeObjectURL(pdfBlobUrl); pdfBlobUrl = null; }
-  pdfFile = null;
-  if(blob){
-    try{ pdfBlobUrl = URL.createObjectURL(blob); }catch(e){ pdfBlobUrl = null; }
-    var mime = /\.pptx$/i.test(name)
-      ? "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-      : "application/pdf";
-    try{ pdfFile = new File([blob], name, {type:mime}); }catch(e){ pdfFile = null; }
-  }
-  var isPptx = /\.pptx$/i.test(name);
-  var isImg = /\.png$/i.test(name);
-  document.querySelector(".pb-t").textContent = isPptx ? "PPT가 준비되었습니다"
-    : (isImg ? "이미지가 준비되었습니다" : "PDF가 준비되었습니다");
-  $("pbView").hidden = isPptx;              /* 이미지 보기는 PDF·이미지에서만 */
-  $("pbOpen").hidden = isPptx || isImg;     /* 파워포인트·이미지는 새 창에서 열지 않는다 */
-  $("pbName").textContent = pdfBlobUrl ? name : (pageImages.length + "쪽 이미지");
-  var canShare = !!(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]}));
-  $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
-  $("pbShare").disabled = !pdfBlobUrl;
-  $("pbOpen").disabled = !pdfBlobUrl;
-if(inAppBrowser()){
-    $("pbExt").hidden = false;
-    $("pbHint").innerHTML = "카카오톡 브라우저는 저장이 막혀 있습니다. <b>이미지로 보기</b>로 길게 눌러 저장하거나, <b>브라우저에서 열기</b>로 사파리·크롬에서 다시 시도하세요.";
-  }
-  if(isImg){
-    $("pbHint").innerHTML = "<b>이미지로 보기</b>에서 그림을 길게 눌러(PC는 오른쪽 클릭) 저장하거나 카카오톡에 바로 붙여 넣으세요.";
-  }
-  $("pdfbar").hidden = false;
-  hideToast();
-}
-function downloadPdf(){
+/* ── 파일 바로 저장 ───────────────────────
+   고른 형식으로 만들어 곧바로 내려받는다 (중간 안내창 없음). */
+function saveBlob(blob, name){
+  var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
-  a.href = pdfBlobUrl; a.download = $("pbName").textContent;
-  a.rel = "noopener"; document.body.appendChild(a); a.click();
-  setTimeout(function(){ a.remove(); }, 400);
+  a.href = url; a.download = name; a.rel = "noopener";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ a.remove(); URL.revokeObjectURL(url); }, 3000);
 }
-function openPdf(){
-  var w = window.open(pdfBlobUrl, "_blank");
-  if(!w) window.location.href = pdfBlobUrl;
+function dataUrlToBlob(url){
+  var parts = url.split(","), mime = (parts[0].match(/:(.*?);/) || [])[1] || "image/jpeg";
+  var bin = atob(parts[1]), n = bin.length, u8 = new Uint8Array(n);
+  while(n--) u8[n] = bin.charCodeAt(n);
+  return new Blob([u8], {type:mime});
 }
 /* ── PPT(A4 세로) 내보내기 ─────────────────
    글꼴은 어느 PC에나 깔려 있는 맑은 고딕만 쓴다 (없으면 시스템 기본 고딕으로 대체). */
@@ -3853,17 +3746,20 @@ async function savePptx(){
       {x:M, y:y, w:W, h:0.26, align:"center", color:"A6A6A6", fontSize:8, fontFace:F});
 
     var blob = await pptx.write({outputType:"blob"});
-    deliverPdf(blob, pdfName("pptx"));
+    saveBlob(blob, pdfName("pptx"));
+    toast("PPT를 저장했습니다");
+    setTimeout(hideToast, 3000);
   }catch(e){
     toast("PPT를 만들지 못했습니다 (" + ((e && e.message) || "알 수 없는 오류") + ")", "err", true);
     setTimeout(hideToast, 6000);
   }
 }
-function pdfName(ext){
+function fileBase(){
   var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
   return (S.company || "비상장주식").replace(/[\\/:*?"<>|]/g,"") + "_주식평가_"
-       + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "." + (ext || "pdf");
+       + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate());
 }
+function pdfName(ext){ return fileBase() + "." + (ext || "pdf"); }
 function wantsFile(){
   return window.matchMedia("(max-width:980px)").matches
       || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
@@ -3959,50 +3855,34 @@ async function savePdfFile(mode){
     footEl.innerHTML = "";
 
     if(imageOnly){
-      deliverPdf(null, pdfName("png"));
-      showViewer();
+      var bn = fileBase();
+      for(var k=0;k<pageImages.length;k++){
+        saveBlob(dataUrlToBlob(pageImages[k]),
+                 bn + (pageImages.length > 1 ? "_" + (k+1) : "") + ".jpg");
+        if(k < pageImages.length-1) await new Promise(function(r){ setTimeout(r, 350); });
+      }
+      toast("이미지 " + pageImages.length + "장을 저장했습니다");
+      setTimeout(hideToast, 3000);
       return;
     }
 
-    var blob = null;
-    try{
-      await loadScript(CDN_PDF);
-      var JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-      var pdf = new JsPDF({unit:"mm", format:"a4", orientation:"portrait"});
-      pageImages.forEach(function(src, i){
-        if(i) pdf.addPage();
-        pdf.addImage(src, "JPEG", 0, 0, PW, PH);
-      });
-      blob = pdf.output("blob");
-    }catch(e){ blob = null; }
-
-    deliverPdf(blob, pdfName());
+    await loadScript(CDN_PDF);
+    var JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    var pdf = new JsPDF({unit:"mm", format:"a4", orientation:"portrait"});
+    pageImages.forEach(function(src, i){
+      if(i) pdf.addPage();
+      pdf.addImage(src, "JPEG", 0, 0, PW, PH);
+    });
+    saveBlob(pdf.output("blob"), pdfName());
+    toast("PDF를 저장했습니다");
+    setTimeout(hideToast, 3000);
   }catch(e){
     sheet.classList.remove("render");
     toast("보고서를 만들지 못했습니다 (" + ((e && e.message) || "알 수 없는 오류") + ")", "err", true);
     setTimeout(hideToast, 6000);
   }
 }
-function resetPdfBar(){
-  $("pdfbar").hidden = true;
-  if(pdfBlobUrl){ URL.revokeObjectURL(pdfBlobUrl); pdfBlobUrl = null; pdfFile = null; }
-}
-$("pbShare").addEventListener("click", async function(){
-  if(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]})){
-    try{
-      await navigator.share({files:[pdfFile], title:$("pbName").textContent});
-      $("pdfbar").hidden = true;
-      return;
-    }catch(e){
-      if(e && e.name === "AbortError") return;
-    }
-  }
-  downloadPdf();
-  toast("저장되지 않으면 '새 창에서 열기'를 눌러주세요");
-});
 $("needGo").addEventListener("click", focusNeed);
-$("pbView").addEventListener("click", function(){ showViewer(); });
-$("pbExt").addEventListener("click", openExternal);
 $("inappOpen").addEventListener("click", openExternal);
 $("inappClose").addEventListener("click", function(){ $("inappBar").hidden = true; });
 /* 홈 화면 앱으로 실행했을 때만 실행 화면을 보여준다 */
@@ -4200,15 +4080,6 @@ $("dropOpen").addEventListener("click", openExternal);
   };
   setTimeout(show, 400);
 })();
-$("vwClose").addEventListener("click", hideViewer);
-$("pbOpen").addEventListener("click", function(){
-  var before = document.hasFocus();
-  openPdf();
-  setTimeout(function(){
-    if(document.hasFocus() && before) toast("새 창이 열리지 않았습니다. '이미지로 보기'를 눌러주세요", "err");
-  }, 900);
-});
-$("pbClose").addEventListener("click", function(){ $("pdfbar").hidden = true; });
 
 /* ── 저장 방식 선택 ─────────────────────── */
 function openSaveMenu(){
@@ -4229,15 +4100,13 @@ document.addEventListener("keydown", function(e){
   if(!$("saveMenu").hidden && e.key === "Escape"){ e.preventDefault(); closeSaveMenu(); }
 });
 $("smPdf").addEventListener("click", function(){
-  closeSaveMenu(); resetPdfBar();
-  if(wantsFile()) savePdfFile();
-  else window.print();
+  closeSaveMenu(); savePdfFile();     /* PC·휴대전화 모두 파일로 바로 저장 */
 });
 $("smPptx").addEventListener("click", function(){
-  closeSaveMenu(); resetPdfBar(); savePptx();
+  closeSaveMenu(); savePptx();
 });
 $("smImg").addEventListener("click", function(){
-  closeSaveMenu(); resetPdfBar(); savePdfFile("image");
+  closeSaveMenu(); savePdfFile("image");
 });
 $("btnReset").addEventListener("click", function(){
   S.company=""; S.baseDate=""; S.shares=0; S.holdRatio=100; S.netAsset=0;
