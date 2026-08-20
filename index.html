@@ -610,6 +610,20 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 }
 .nextbtn.ghost{background:var(--paper);color:var(--ink)}
 .nextbtn:active{opacity:.85}
+.expbox{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.exp-t{display:block;font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-0.03em}
+.exp-row{display:flex;gap:9px;margin-top:11px}
+.expbtn{
+  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  border:1px solid var(--line-2);background:var(--sub);border-radius:10px;padding:12px 8px;transition:.14s;
+}
+.expbtn b{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-0.02em}
+.expbtn span{font-size:11px;color:var(--faint)}
+.expbtn:hover{border-color:var(--accent);background:var(--hw-tint)}
+.expbtn:hover b{color:var(--accent-deep)}
+.expbtn:active{transform:translateY(1px)}
+.exp-n{margin:11px 0 0;font-size:11.5px;line-height:1.65;color:var(--faint);word-break:keep-all}
+.exp-n b{color:var(--muted);font-weight:700}
 .resetline{margin-top:18px;text-align:center}
 .resetline button{
   display:inline-flex;align-items:center;gap:7px;
@@ -1165,9 +1179,9 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       <article class="intro-card">
         <span class="ic-step">05 / 05</span>
         <h3>③ 보고서로 내보내기</h3>
-        <p class="ic-lead">오른쪽 위 <b>PDF로 저장</b>을 누르면<br>담아둔 시나리오까지 함께 담은 보고서가 만들어집니다.</p>
+        <p class="ic-lead">오른쪽 위 <b>PDF로 저장</b>을 누르면<br>담아둔 시나리오까지 함께 담은 보고서가 만들어집니다.<br><b>결과</b> 탭 맨 아래에서 <b>PPT(A4 세로)</b>로도 내보낼 수 있습니다.</p>
         <ul class="ic-list">
-          <li><em class="d"></em><span>휴대전화에서는 저장한 PDF를 <b>카카오톡&nbsp;· 메일로 바로 공유</b>할 수 있습니다</span></li>
+          <li><em class="d"></em><span>휴대전화에서는 저장한 파일을 <b>카카오톡&nbsp;· 메일로 바로 공유</b>할 수 있습니다</span></li>
           <li><em class="d"></em><span>화면 이동은 <b>좌우로 밀거나</b> 위 탭을 누르면 됩니다 (PC는 방향키)</span></li>
         </ul>
         <p class="ic-note"><b>참고용 약식 계산입니다.</b><br>
@@ -1473,6 +1487,15 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
         <p>· 재무제표 기준 약식 계산입니다. 실행 전 반드시 세무 전문가의 검토를 받으시기 바랍니다.</p>
       </div>
       <button class="nextbtn ghost" type="button" id="goSave">이 값을 시나리오로 담기</button>
+
+      <div class="expbox">
+        <span class="exp-t">보고서 내보내기</span>
+        <div class="exp-row">
+          <button type="button" class="expbtn" id="btnExpPdf"><b>PDF</b><span>A4 세로 · 인쇄용</span></button>
+          <button type="button" class="expbtn" id="btnExpPptx"><b>PPT</b><span>A4 세로 · 편집용</span></button>
+        </div>
+        <p class="exp-n">PPT는 <b>맑은 고딕</b>으로 만들어 어느 PC에서나 글꼴이 깨지지 않고, 슬라이드에서 문구를 바로 고칠 수 있습니다.</p>
+      </div>
   </section>
 
   <!-- ═══ 비교 ═══ -->
@@ -2094,37 +2117,14 @@ function printCols(){
   return cols;
 }
 
-/* ── print sheet ───────────────────────── */
-function buildPrint(){
+/* 보고서 표 데이터 — 인쇄용 시트와 PPT가 함께 쓴다 */
+function reportTables(){
   var cols = printCols();
   var multi = cols.length>1;
   var base = cols[0];
   var typeLabel = {general:"일반법인 60:40", real50:"부동산 50%↑ 40:60", real80:"순자산가치 100%"};
   function amt(v){ return multi ? eok(v)+"억" : num(v)+"원"; }
 
-  // 결과 밴드
-  var showReBand = cols.some(function(x){ return (x.reValue||0) !== (cols[0].reValue||0); });
-  var band = '<div class="p-band' + (multi ? "" : " solo") + '">' + cols.map(function(s,i){
-    var d = (i>0 && base.corpValue) ? (s.corpValue-base.corpValue)/base.corpValue*100 : null;
-    return '<div class="p-fcard'+(i===0?" base":"")+'">'
-         + '<span class="n">'+escapeHtml(s.name)+'</span>'
-         + '<span class="v">'+num(s.final)+'<em>원</em></span>'
-         + '<span class="d">기업가치 '+eok(s.corpValue)+'억원</span>'
-         + (showReBand && (s.reValue||s.realEstate) ? '<span class="re">감정평가 '+eok(s.reValue||s.realEstate)+'억</span>' : "")
-         + '<span class="d2">' + (d===null ? '&nbsp;' : '<b class="'+(d>0?"up":"dn")+'">'+(d>0?"+":"")+d.toFixed(1)+'%</b>') + '</span>'
-         + '</div>';
-  }).join("") + '</div>';
-
-  function table(rows, cls){
-    var h = '<table class="p-c"><thead><tr><th class="rh">구분</th>'
-          + cols.map(function(s){ return "<th>"+escapeHtml(s.name)+"</th>"; }).join("")
-          + '</tr></thead><tbody>';
-    rows.forEach(function(r){
-      h += '<tr'+(r.key?' class="key"':(r.dl?' class="dl"':(r.hi?' class="hi"':'')))+'><th class="rh">'+r.label+'</th>'
-         + r.vals.map(function(v){ return "<td>"+v+"</td>"; }).join("") + '</tr>';
-    });
-    return h + '</tbody></table>';
-  }
   function col(fn){ return cols.map(fn); }
 
   var t1 = [
@@ -2176,6 +2176,39 @@ function buildPrint(){
     })});
   }
 
+  return {cols:cols, multi:multi, base:base, amt:amt, typeLabel:typeLabel,
+          t1:t1, t2:t2, t3:t3};
+}
+
+/* ── print sheet ───────────────────────── */
+function buildPrint(){
+  var R = reportTables();
+  var cols = R.cols, multi = R.multi, base = R.base;
+  var t1 = R.t1, t2 = R.t2, t3 = R.t3;
+
+  // 결과 밴드
+  var showReBand = cols.some(function(x){ return (x.reValue||0) !== (cols[0].reValue||0); });
+  var band = '<div class="p-band' + (multi ? "" : " solo") + '">' + cols.map(function(s,i){
+    var d = (i>0 && base.corpValue) ? (s.corpValue-base.corpValue)/base.corpValue*100 : null;
+    return '<div class="p-fcard'+(i===0?" base":"")+'">'
+         + '<span class="n">'+escapeHtml(s.name)+'</span>'
+         + '<span class="v">'+num(s.final)+'<em>원</em></span>'
+         + '<span class="d">기업가치 '+eok(s.corpValue)+'억원</span>'
+         + (showReBand && (s.reValue||s.realEstate) ? '<span class="re">감정평가 '+eok(s.reValue||s.realEstate)+'억</span>' : "")
+         + '<span class="d2">' + (d===null ? '&nbsp;' : '<b class="'+(d>0?"up":"dn")+'">'+(d>0?"+":"")+d.toFixed(1)+'%</b>') + '</span>'
+         + '</div>';
+  }).join("") + '</div>';
+
+  function table(rows, cls){
+    var h = '<table class="p-c"><thead><tr><th class="rh">구분</th>'
+          + cols.map(function(s){ return "<th>"+escapeHtml(s.name)+"</th>"; }).join("")
+          + '</tr></thead><tbody>';
+    rows.forEach(function(r){
+      h += '<tr'+(r.key?' class="key"':(r.dl?' class="dl"':(r.hi?' class="hi"':'')))+'><th class="rh">'+r.label+'</th>'
+         + r.vals.map(function(v){ return "<td>"+v+"</td>"; }).join("") + '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
   var page2 = '<div class="p-page2">'
     + (multi ? '<p class="p-sub"><i>4</i>기업가치 추이</p><div class="p-chart">'+chartSVG(cols, 700)+'</div>' : '')
     + printNarrative(cols, base, multi)
@@ -3286,6 +3319,9 @@ var CDN_PDFJS = [
 var CDN_H2C = ["https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
                "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
                "https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"];
+var CDN_PPTX = ["https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/4.0.1/pptxgen.bundle.js",
+                "https://cdn.jsdelivr.net/npm/pptxgenjs@4.0.1/dist/pptxgen.bundle.js",
+                "https://unpkg.com/pptxgenjs@4.0.1/dist/pptxgen.bundle.js"];
 var CDN_PDF = ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
                "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
                "https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"];
@@ -3539,8 +3575,15 @@ function deliverPdf(blob, name){
   pdfFile = null;
   if(blob){
     try{ pdfBlobUrl = URL.createObjectURL(blob); }catch(e){ pdfBlobUrl = null; }
-    try{ pdfFile = new File([blob], name, {type:"application/pdf"}); }catch(e){ pdfFile = null; }
+    var mime = /\.pptx$/i.test(name)
+      ? "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      : "application/pdf";
+    try{ pdfFile = new File([blob], name, {type:mime}); }catch(e){ pdfFile = null; }
   }
+  var isPptx = /\.pptx$/i.test(name);
+  document.querySelector(".pb-t").textContent = isPptx ? "PPT가 준비되었습니다" : "PDF가 준비되었습니다";
+  $("pbView").hidden = isPptx;              /* 이미지 보기는 PDF 에서만 */
+  $("pbOpen").hidden = isPptx;              /* 파워포인트 파일은 새 창에서 열 수 없다 */
   $("pbName").textContent = pdfBlobUrl ? name : (pageImages.length + "쪽 이미지");
   var canShare = !!(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]}));
   $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
@@ -3563,10 +3606,239 @@ function openPdf(){
   var w = window.open(pdfBlobUrl, "_blank");
   if(!w) window.location.href = pdfBlobUrl;
 }
-function pdfName(){
+/* ── PPT(A4 세로) 내보내기 ─────────────────
+   글꼴은 어느 PC에나 깔려 있는 맑은 고딕만 쓴다 (없으면 시스템 기본 고딕으로 대체). */
+var PPT_FONT = "맑은 고딕";
+function pptLines(html, sel){
+  var d = document.createElement("div");
+  d.innerHTML = html;
+  return [].slice.call(d.querySelectorAll(sel)).map(function(el){
+    return (el.textContent || "").replace(/\s+/g, " ").trim();
+  }).filter(Boolean);
+}
+async function savePptx(){
+  toast("PPT를 만드는 중…", "", true);
+  try{
+    await loadScript(CDN_PPTX);
+  }catch(e){
+    toast("PPT 생성 도구를 불러오지 못했습니다. 네트워크를 확인해 주세요.", "err", true);
+    setTimeout(hideToast, 6000);
+    return;
+  }
+  try{
+    var R = reportTables();
+    var cols = R.cols, multi = R.multi, base = R.base;
+    var PG = window.PptxGenJS;
+    var pptx = new PG();
+    pptx.defineLayout({name:"A4P", width:8.27, height:11.69});
+    pptx.layout = "A4P";
+    pptx.title = (S.company || "비상장법인") + " 비상장주식 가치평가";
+    pptx.author = "한화생명 WM센터";
+
+    var M = 0.55, W = 8.27 - M*2;
+    var INK = "231815", OR = "EE6F00", OR2 = "ED7D31", ORD = "C75A00";
+    var GRAY = "727171", MUT = "404040", LINE = "E0E0E0", TINT = "FDF1E6";
+    var F = PPT_FONT;
+
+    pptx.defineSlideMaster({
+      title: "MAIN",
+      background: {color:"FFFFFF"},
+      objects: [
+        {rect:{x:M, y:0.50, w:1.62, h:0.30, fill:{color:"333333"}}},
+        {text:{text:"비상장주식 평가", options:{x:M, y:0.50, w:1.62, h:0.30, align:"center", valign:"middle", color:"FFFFFF", fontSize:11, fontFace:F}}},
+        {text:{text:(S.company || "비상장법인"), options:{x:M+1.78, y:0.50, w:3.3, h:0.30, valign:"middle", color:INK, fontSize:12, fontFace:F}}},
+        {text:{text:"평가기준일 " + (S.baseDate || "—"), options:{x:M+4.0, y:0.50, w:W-4.0, h:0.30, align:"right", valign:"middle", color:GRAY, fontSize:9, fontFace:F}}},
+        {line:{x:M, y:0.88, w:W, h:0, line:{color:INK, width:1}}},
+        {text:{text:"ⓒ Hanwha Life Insurance Co.,Ltd. All Rights Reserved.", options:{x:M+0.32, y:11.02, w:4.4, h:0.22, valign:"middle", color:"8C8C8C", fontSize:7, fontFace:F}}},
+        {image:{x:6.44, y:11.02, w:0.66, h:0.19, data:HW_CI}},
+        {text:{text:"WM센터", options:{x:7.12, y:11.00, w:0.7, h:0.22, valign:"middle", color:INK, fontSize:9, fontFace:F}}}
+      ],
+      slideNumber: {x:M, y:11.02, w:0.3, h:0.22, color:"A6A6A6", fontSize:9, fontFace:F}
+    });
+
+    var sl = null, y = 0;
+    function newSlide(){ sl = pptx.addSlide({masterName:"MAIN"}); y = 1.18; return sl; }
+    function need(h){ if(!sl || y + h > 10.62) newSlide(); }
+
+    /* 한글은 글자폭이 글자크기와 비슷해 줄 수를 어림할 수 있다 */
+    function textH(txt, fs, w, lh){
+      var per = Math.max(8, Math.floor(w / (fs/72) * 0.88));   // 넉넉하게 잡아 겹침을 막는다
+      var lines = 0;
+      String(txt).split("\n").forEach(function(L){ lines += Math.max(1, Math.ceil(L.length / per)); });
+      return lines * (fs/72) * (lh || 1.55);
+    }
+    function tableH(rows){
+      var n = cols.length, rh = 0.245;
+      return 0.30 + rows.length * rh + 0.14;
+    }
+    /* 소제목 : 오렌지 원형 번호 + 제목 */
+    function heading(no, txt, keepH){
+      need(0.40 + (keepH || 0));
+      sl.addShape(pptx.ShapeType.ellipse, {x:M, y:y, w:0.23, h:0.23, fill:{color:OR2}});
+      sl.addText(String(no), {x:M, y:y, w:0.23, h:0.23, align:"center", valign:"middle", color:"FFFFFF", fontSize:9, fontFace:F});
+      sl.addText(txt, {x:M+0.32, y:y-0.03, w:W-0.32, h:0.29, valign:"middle", bold:true, color:INK, fontSize:12.5, fontFace:F});
+      y += 0.36;
+    }
+
+    /* 표 */
+    function addTable(rows){
+      var n = cols.length;
+      var lw = n >= 4 ? 1.75 : 2.15;
+      var vw = (W - lw) / n;
+      var fs = n >= 5 ? 8 : (n >= 3 ? 8.5 : 9.5);
+      var rh = 0.245, hh = 0.30;
+      /* 소제목과 함께 자리를 잡아두므로 여기서는 넘침만 확인한다 */
+      if(y + hh + rows.length * rh + 0.12 > 10.62) newSlide();
+      var body = [[{text:"구분", options:{align:"left", bold:true, color:INK, fontSize:fs+0.5,
+                     border:[{type:"none"},{type:"none"},{pt:1, color:INK},{type:"none"}]}}].concat(
+                   cols.map(function(c){
+                     return {text:c.name, options:{align:"right", bold:true, color:INK, fontSize:fs+0.5,
+                       border:[{type:"none"},{type:"none"},{pt:1, color:INK},{type:"none"}]}};
+                   }))];
+      rows.forEach(function(r, ri){
+        var key = !!r.key, hi = !!r.hi, dl = !!r.dl;
+        var fill = key || hi ? TINT : (ri % 2 ? "FAFAFA" : "FFFFFF");
+        var bd = [{type:"none"},{type:"none"},{pt:0.5, color:key ? OR : LINE},{type:"none"}];
+        if(key) bd[0] = {pt:1, color:OR};
+        var lo = {align:"left", fontSize:dl ? Math.max(7, fs-1.5) : fs, bold:key, color:dl ? "8C8C8C" : (hi ? ORD : MUT),
+                  fill:{color:fill}, border:bd, margin:[2,4,2,4]};
+        var vo = {align:"right", fontSize:key ? fs+2.5 : (dl ? Math.max(7, fs-1.5) : fs), bold:key || hi,
+                  color:key || hi ? ORD : (dl ? "8C8C8C" : MUT), fill:{color:fill}, border:bd, margin:[2,4,2,4]};
+        body.push([{text:String(r.label).replace(/<[^>]+>/g, ""), options:lo}]
+          .concat(r.vals.map(function(v){ return {text:String(v).replace(/<[^>]+>/g, ""), options:vo}; })));
+      });
+      sl.addTable(body, {x:M, y:y, w:W, colW:[lw].concat(cols.map(function(){ return vw; })),
+        fontFace:F, valign:"middle", autoPage:false, rowH:rh});
+      y += hh + rows.length * rh + 0.14;
+    }
+
+    /* ── 1쪽 : 도입부 + 결과 밴드 ── */
+    newSlide();
+    sl.addText("Valuation Report", {x:M, y:y, w:W, h:0.24, color:OR, fontSize:11, fontFace:F});
+    y += 0.26;
+    sl.addText(S.company || "비상장법인", {x:M, y:y, w:W, h:0.46, color:INK, fontSize:22, fontFace:F, fit:"shrink"});
+    y += 0.52;
+    sl.addText("상속세 및 증여세법 제63조 · 같은 법 시행령 제54조의 보충적 평가방법으로 산출한 참고용 자료입니다."
+      + "\n평가기준일 " + (S.baseDate || "—") + " · 출력일 " + new Date().toLocaleDateString("ko-KR"),
+      {x:M, y:y, w:W, h:0.52, color:MUT, fontSize:9.5, fontFace:F, lineSpacingMultiple:1.4});
+    y += 0.62;
+
+    var n = cols.length, gap = 0.08, cw = (W - gap*(n-1)) / n, bh = n > 1 ? 1.02 : 0.72;
+    need(bh + 0.18);
+    cols.forEach(function(c, i){
+      var x = M + i*(cw+gap), b0 = i === 0;
+      var d = (i > 0 && base.corpValue) ? (c.corpValue-base.corpValue)/base.corpValue*100 : null;
+      sl.addShape(pptx.ShapeType.roundRect, {x:x, y:y, w:cw, h:bh, rectRadius:0.04,
+        fill:{color:b0 ? OR : "F2F2F2"}, line:{color:b0 ? OR : "F2F2F2"}});
+      if(n > 1){
+        sl.addText(c.name, {x:x+0.13, y:y+0.07, w:cw-0.26, h:0.22, fontSize:9, bold:true,
+          color:b0 ? "FFFFFF" : GRAY, fontFace:F, fit:"shrink"});
+        sl.addText(num(c.final) + "원", {x:x+0.13, y:y+0.28, w:cw-0.26, h:0.34, fontSize:b0 ? 16 : 14,
+          bold:true, color:b0 ? "FFFFFF" : INK, fontFace:F, fit:"shrink"});
+        sl.addText("기업가치 " + eok(c.corpValue) + "억원", {x:x+0.13, y:y+0.62, w:cw-0.26, h:0.2,
+          fontSize:8.5, color:b0 ? "FFFFFF" : GRAY, fontFace:F, fit:"shrink"});
+        sl.addText(d === null ? "" : (d > 0 ? "+" : "") + d.toFixed(1) + "%",
+          {x:x+0.13, y:y+0.80, w:cw-0.26, h:0.18, fontSize:8.5, color:b0 ? "FFFFFF" : "A6A6A6", fontFace:F});
+      } else {
+        sl.addText(c.name, {x:x+0.18, y:y, w:1.3, h:bh, valign:"middle", fontSize:11, bold:true, color:"FFFFFF", fontFace:F});
+        sl.addText(num(c.final) + "원", {x:x+1.5, y:y, w:2.6, h:bh, valign:"middle", fontSize:20, bold:true, color:"FFFFFF", fontFace:F, fit:"shrink"});
+        sl.addText("기업가치 " + eok(c.corpValue) + "억원", {x:x+cw-2.6, y:y, w:2.4, h:bh, valign:"middle",
+          align:"right", fontSize:11, color:"FFFFFF", fontFace:F});
+      }
+    });
+    y += bh + 0.22;
+
+    heading(1, "평가 기초자료", tableH(R.t1));   addTable(R.t1);
+    heading(2, "평가 산출내역", tableH(R.t2));   addTable(R.t2);
+    heading(3, "지분가치", tableH(R.t3));        addTable(R.t3);
+
+    /* 결론 바 */
+    need(0.52);
+    sl.addShape(pptx.ShapeType.rect, {x:M, y:y, w:W, h:0.44, fill:{color:"E6E6E6"}, line:{color:"E6E6E6"}});
+    sl.addText([
+      {text:"보유지분 " + base.holdRatio + "% 기준 지분가치 " + eok(base.holdValue) + "억원", options:{bold:true, fontSize:11.5, color:INK}},
+      {text:"   · 1주당 " + num(base.final) + "원 · 기업가치 " + eok(base.corpValue) + "억원", options:{fontSize:9.5, color:"5A5A5A"}}
+    ], {x:M, y:y, w:W, h:0.44, align:"center", valign:"middle", fontFace:F});
+    y += 0.60;
+
+    /* 기업가치 추이 (여러 안일 때) */
+    var step = 4;
+    if(multi){
+      heading(step++, "기업가치 추이");
+      need(3.1);
+      sl.addChart(pptx.ChartType.bar,
+        [{name:"기업가치(억원)", labels:cols.map(function(c){ return c.name; }),
+          values:cols.map(function(c){ return Math.round(c.corpValue/1e8*100)/100; })}],
+        {x:M, y:y, w:W, h:2.9, barDir:"col", chartColors:[OR2], showLegend:false, showValue:true,
+         dataLabelFontFace:F, dataLabelFontSize:9, dataLabelColor:INK, dataLabelPosition:"outEnd",
+         catAxisLabelFontFace:F, catAxisLabelFontSize:9, catAxisLabelColor:MUT,
+         valAxisLabelFontFace:F, valAxisLabelFontSize:9, valAxisLabelColor:GRAY,
+         valGridLine:{color:"EDEDED", size:1}, catAxisLineShow:true, border:{pt:0, color:"FFFFFF"}});
+      y += 3.1;
+    }
+
+    /* 평가 결과 해설 */
+    var nh = printNarrative(cols, base, multi);
+    var nd = document.createElement("div");
+    nd.innerHTML = nh;
+    var items = [].slice.call(nd.querySelectorAll(".n-item"));
+    if(items.length){
+      heading(step++, "평가 결과 해설", 1.0);
+      items.forEach(function(el, i){
+        var t = (el.querySelector(".n-t") || {}).textContent || "";
+        var lines = [].slice.call(el.querySelectorAll(".sent")).map(function(x){
+          return (x.textContent || "").replace(/\s+/g, " ").trim();
+        }).filter(Boolean);
+        if(!lines.length){
+          var pEl = el.querySelector("p");
+          if(pEl) lines = [(pEl.textContent || "").replace(/\s+/g, " ").trim()];
+        }
+        var bodyW = W - 0.34;
+        var bodyH = 0;
+        lines.forEach(function(L){ bodyH += textH(L, 9.5, bodyW, 1.5); });
+        bodyH = Math.max(0.26, bodyH + lines.length * 0.035);
+        var h = 0.34 + bodyH + 0.06;
+        need(h + 0.14);
+        sl.addShape(pptx.ShapeType.rect, {x:M, y:y+0.02, w:0.24, h:0.24, fill:{color:OR2}, line:{color:OR2}});
+        sl.addText(String(i+1), {x:M, y:y+0.02, w:0.24, h:0.24, align:"center", valign:"middle",
+          color:"FFFFFF", fontSize:9, bold:true, fontFace:F});
+        sl.addText(t.replace(/\s+/g, " ").trim(), {x:M+0.34, y:y, w:W-0.34, h:0.28, valign:"middle",
+          bold:true, color:INK, fontSize:11, fontFace:F});
+        sl.addText(lines.map(function(L, k){ return {text:L, options:{breakLine:k < lines.length-1}}; }),
+          {x:M+0.34, y:y+0.32, w:bodyW, h:bodyH, color:MUT, fontSize:9.5, fontFace:F,
+           lineSpacingMultiple:1.5, valign:"top"});
+        y += h + 0.14;
+      });
+    }
+
+    /* 유의사항 */
+    var cautions = pptLines(printCautions(base, multi), "ul.p-caution li");
+    if(cautions.length){
+      var ch = 0;
+      cautions.forEach(function(L){ ch += textH(L, 9, W-0.36, 1.55) + 0.08; });
+      heading(step++, "유의사항", ch);
+      need(ch + 0.1);
+      sl.addText(cautions.map(function(L, k){
+        return {text:L, options:{bullet:{type:"bullet"}, breakLine:k < cautions.length-1}};
+      }), {x:M+0.06, y:y, w:W-0.06, h:ch, color:MUT, fontSize:9, fontFace:F, lineSpacingMultiple:1.5, valign:"top"});
+      y += ch + 0.1;
+    }
+
+    need(0.3);
+    sl.addText("상속세 및 증여세법 제63조 · 같은 법 시행령 제54조 보충적 평가방법 기준",
+      {x:M, y:y, w:W, h:0.26, align:"center", color:"A6A6A6", fontSize:8, fontFace:F});
+
+    var blob = await pptx.write({outputType:"blob"});
+    deliverPdf(blob, pdfName("pptx"));
+  }catch(e){
+    toast("PPT를 만들지 못했습니다 (" + ((e && e.message) || "알 수 없는 오류") + ")", "err", true);
+    setTimeout(hideToast, 6000);
+  }
+}
+function pdfName(ext){
   var d = new Date(), p = function(n){ return (n<10?"0":"")+n; };
   return (S.company || "비상장주식").replace(/[\\/:*?"<>|]/g,"") + "_주식평가_"
-       + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + ".pdf";
+       + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "." + (ext || "pdf");
 }
 function wantsFile(){
   return window.matchMedia("(max-width:980px)").matches
@@ -3881,6 +4153,8 @@ function maybeOpenIntro(){
   t.addEventListener("pointerleave", dragEnd);
 })();
 
+$("btnExpPdf").addEventListener("click", function(){ $("btnPrint").click(); });
+$("btnExpPptx").addEventListener("click", savePptx);
 $("dropOpen").addEventListener("click", openExternal);
 
 // 스와이프 안내 (모바일 첫 방문 1회 · 사용 안내가 닫힌 뒤에 보여준다)
