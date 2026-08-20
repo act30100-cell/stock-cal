@@ -610,20 +610,35 @@ table.grid-t input.w-year{text-align:left;color:var(--muted)}
 }
 .nextbtn.ghost{background:var(--paper);color:var(--ink)}
 .nextbtn:active{opacity:.85}
-.expbox{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
-.exp-t{display:block;font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-0.03em}
-.exp-row{display:flex;gap:9px;margin-top:11px}
-.expbtn{
-  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
-  border:1px solid var(--line-2);background:var(--sub);border-radius:10px;padding:12px 8px;transition:.14s;
+/* 저장 방식 선택 */
+.savemenu{position:fixed;inset:0;z-index:118;background:rgba(35,31,32,.5);display:flex;align-items:flex-end;justify-content:center}
+.savemenu[hidden]{display:none}
+.sm-box{
+  width:100%;max-width:460px;background:var(--paper);
+  border-radius:18px 18px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 40px rgba(0,0,0,.2);animation:smUp .22s ease-out;
 }
-.expbtn b{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-0.02em}
-.expbtn span{font-size:11px;color:var(--faint)}
-.expbtn:hover{border-color:var(--accent);background:var(--hw-tint)}
-.expbtn:hover b{color:var(--accent-deep)}
-.expbtn:active{transform:translateY(1px)}
-.exp-n{margin:11px 0 0;font-size:11.5px;line-height:1.65;color:var(--faint);word-break:keep-all}
-.exp-n b{color:var(--muted);font-weight:700}
+@keyframes smUp{from{transform:translateY(18px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.sm-t{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-0.03em;margin:2px 4px 13px}
+.sm-opt{
+  width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;cursor:pointer;
+  border:1px solid var(--line-2);background:var(--sub);border-radius:12px;
+  padding:13px 15px;margin-bottom:9px;text-align:left;transition:.14s;
+}
+.sm-opt b{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-0.02em}
+.sm-opt span{font-size:11.5px;color:var(--faint);line-height:1.5;word-break:keep-all}
+.sm-opt:hover{border-color:var(--accent);background:var(--hw-tint)}
+.sm-opt:hover b{color:var(--accent-deep)}
+.sm-opt:active{transform:translateY(1px)}
+.sm-x{
+  width:100%;border:0;background:transparent;color:var(--faint);
+  font-size:13px;font-weight:700;cursor:pointer;padding:11px;border-radius:10px;margin-top:2px;
+}
+.sm-x:hover{color:var(--accent-deep);background:var(--sub)}
+@media(min-width:981px){
+  .savemenu{align-items:center}
+  .sm-box{max-width:420px;border-radius:16px;padding:20px 18px 16px;animation:spIn .2s ease-out}
+}
 .resetline{margin-top:18px;text-align:center}
 .resetline button{
   display:inline-flex;align-items:center;gap:7px;
@@ -1179,7 +1194,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       <article class="intro-card">
         <span class="ic-step">05 / 05</span>
         <h3>③ 보고서로 내보내기</h3>
-        <p class="ic-lead">오른쪽 위 <b>PDF로 저장</b>을 누르면<br>담아둔 시나리오까지 함께 담은 보고서가 만들어집니다.<br><b>결과</b> 탭 맨 아래에서 <b>PPT(A4 세로)</b>로도 내보낼 수 있습니다.</p>
+        <p class="ic-lead">오른쪽 위 <b>저장하기</b>를 누르면<br>담아둔 시나리오까지 함께 담은 보고서가 만들어집니다.<br><b>PDF · PPT · 이미지</b> 중에서 고를 수 있습니다.</p>
         <ul class="ic-list">
           <li><em class="d"></em><span>휴대전화에서는 저장한 파일을 <b>카카오톡&nbsp;· 메일로 바로 공유</b>할 수 있습니다</span></li>
           <li><em class="d"></em><span>화면 이동은 <b>좌우로 밀거나</b> 위 탭을 누르면 됩니다 (PC는 방향키)</span></li>
@@ -1209,7 +1224,7 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       <p>상증세법 §63 · 시행령 §54 보충적 평가방법 <span class="ver">v11</span></p>
     </div>
     <button class="btn btn-help" id="btnHelp" type="button">사용방법</button>
-    <button class="btn btn-primary" id="btnPrint" type="button">PDF로 저장</button>
+    <button class="btn btn-primary" id="btnPrint" type="button">저장하기</button>
   </div>
 </header>
 
@@ -1488,14 +1503,6 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
       </div>
       <button class="nextbtn ghost" type="button" id="goSave">이 값을 시나리오로 담기</button>
 
-      <div class="expbox">
-        <span class="exp-t">보고서 내보내기</span>
-        <div class="exp-row">
-          <button type="button" class="expbtn" id="btnExpPdf"><b>PDF</b><span>A4 세로 · 인쇄용</span></button>
-          <button type="button" class="expbtn" id="btnExpPptx"><b>PPT</b><span>A4 세로 · 편집용</span></button>
-        </div>
-        <p class="exp-n">PPT는 <b>맑은 고딕</b>으로 만들어 어느 PC에서나 글꼴이 깨지지 않고, 슬라이드에서 문구를 바로 고칠 수 있습니다.</p>
-      </div>
   </section>
 
   <!-- ═══ 비교 ═══ -->
@@ -1535,6 +1542,18 @@ table.cmp-t tr.delta td.dn{color:#3E7A5E}
 <div class="p-cap" id="pgFoot"></div>
 <div class="swipehint" id="swipeHint" hidden>← 좌우로 밀거나 방향키로 화면 이동 →</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="savemenu" id="saveMenu" hidden role="dialog" aria-modal="true" aria-label="저장 방식 선택">
+  <div class="sm-box">
+    <div class="sm-t">어떤 형식으로 저장할까요?</div>
+    <button type="button" class="sm-opt" id="smPdf">
+      <b>PDF</b><span>A4 세로 · 인쇄와 공유에 가장 무난합니다</span></button>
+    <button type="button" class="sm-opt" id="smPptx">
+      <b>PPT</b><span>A4 세로 · 맑은 고딕, 슬라이드에서 바로 고칠 수 있습니다</span></button>
+    <button type="button" class="sm-opt" id="smImg">
+      <b>이미지</b><span>쪽마다 그림 파일 · 카카오톡에 바로 붙여 넣기 좋습니다</span></button>
+    <button type="button" class="sm-x" id="smClose">닫기</button>
+  </div>
+</div>
 <div class="pdfbar" id="pdfbar" hidden>
   <div class="pb-t">PDF가 준비되었습니다</div>
   <span class="pb-n" id="pbName"></span>
@@ -3581,9 +3600,11 @@ function deliverPdf(blob, name){
     try{ pdfFile = new File([blob], name, {type:mime}); }catch(e){ pdfFile = null; }
   }
   var isPptx = /\.pptx$/i.test(name);
-  document.querySelector(".pb-t").textContent = isPptx ? "PPT가 준비되었습니다" : "PDF가 준비되었습니다";
-  $("pbView").hidden = isPptx;              /* 이미지 보기는 PDF 에서만 */
-  $("pbOpen").hidden = isPptx;              /* 파워포인트 파일은 새 창에서 열 수 없다 */
+  var isImg = /\.png$/i.test(name);
+  document.querySelector(".pb-t").textContent = isPptx ? "PPT가 준비되었습니다"
+    : (isImg ? "이미지가 준비되었습니다" : "PDF가 준비되었습니다");
+  $("pbView").hidden = isPptx;              /* 이미지 보기는 PDF·이미지에서만 */
+  $("pbOpen").hidden = isPptx || isImg;     /* 파워포인트·이미지는 새 창에서 열지 않는다 */
   $("pbName").textContent = pdfBlobUrl ? name : (pageImages.length + "쪽 이미지");
   var canShare = !!(pdfFile && navigator.canShare && navigator.canShare({files:[pdfFile]}));
   $("pbShare").textContent = canShare ? "공유 · 저장" : "내려받기";
@@ -3592,6 +3613,9 @@ function deliverPdf(blob, name){
 if(inAppBrowser()){
     $("pbExt").hidden = false;
     $("pbHint").innerHTML = "카카오톡 브라우저는 저장이 막혀 있습니다. <b>이미지로 보기</b>로 길게 눌러 저장하거나, <b>브라우저에서 열기</b>로 사파리·크롬에서 다시 시도하세요.";
+  }
+  if(isImg){
+    $("pbHint").innerHTML = "<b>이미지로 보기</b>에서 그림을 길게 눌러(PC는 오른쪽 클릭) 저장하거나 카카오톡에 바로 붙여 넣으세요.";
   }
   $("pdfbar").hidden = false;
   hideToast();
@@ -3855,9 +3879,10 @@ async function capRun(el){
   el.classList.remove("render");
   return c;
 }
-async function savePdfFile(){
+async function savePdfFile(mode){
+  var imageOnly = (mode === "image");
   var sheet = $("printSheet");
-  toast("보고서를 만드는 중…", "", true);
+  toast(imageOnly ? "이미지를 만드는 중…" : "보고서를 만드는 중…", "", true);
   try{
     await loadScript(CDN_H2C);
   }catch(e){
@@ -3932,6 +3957,12 @@ async function savePdfFile(){
       pageImages.push(pc.toDataURL("image/jpeg", 0.9));
     }
     footEl.innerHTML = "";
+
+    if(imageOnly){
+      deliverPdf(null, pdfName("png"));
+      showViewer();
+      return;
+    }
 
     var blob = null;
     try{
@@ -4153,8 +4184,6 @@ function maybeOpenIntro(){
   t.addEventListener("pointerleave", dragEnd);
 })();
 
-$("btnExpPdf").addEventListener("click", function(){ $("btnPrint").click(); });
-$("btnExpPptx").addEventListener("click", savePptx);
 $("dropOpen").addEventListener("click", openExternal);
 
 // 스와이프 안내 (모바일 첫 방문 1회 · 사용 안내가 닫힌 뒤에 보여준다)
@@ -4181,10 +4210,34 @@ $("pbOpen").addEventListener("click", function(){
 });
 $("pbClose").addEventListener("click", function(){ $("pdfbar").hidden = true; });
 
-$("btnPrint").addEventListener("click", function(){
-  resetPdfBar();
+/* ── 저장 방식 선택 ─────────────────────── */
+function openSaveMenu(){
+  $("saveMenu").hidden = false;
+  document.body.style.overflow = "hidden";
+  setTimeout(function(){ try{ $("smPdf").focus({preventScroll:true}); }catch(e){} }, 60);
+}
+function closeSaveMenu(){
+  $("saveMenu").hidden = true;
+  document.body.style.overflow = "";
+}
+$("btnPrint").addEventListener("click", openSaveMenu);
+$("smClose").addEventListener("click", closeSaveMenu);
+$("saveMenu").addEventListener("click", function(e){
+  if(e.target === $("saveMenu")) closeSaveMenu();
+});
+document.addEventListener("keydown", function(e){
+  if(!$("saveMenu").hidden && e.key === "Escape"){ e.preventDefault(); closeSaveMenu(); }
+});
+$("smPdf").addEventListener("click", function(){
+  closeSaveMenu(); resetPdfBar();
   if(wantsFile()) savePdfFile();
   else window.print();
+});
+$("smPptx").addEventListener("click", function(){
+  closeSaveMenu(); resetPdfBar(); savePptx();
+});
+$("smImg").addEventListener("click", function(){
+  closeSaveMenu(); resetPdfBar(); savePdfFile("image");
 });
 $("btnReset").addEventListener("click", function(){
   S.company=""; S.baseDate=""; S.shares=0; S.holdRatio=100; S.netAsset=0;
